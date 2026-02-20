@@ -193,27 +193,97 @@ git pull origin master
 
 ---
 
-## 🎯 다음 세션 시작 방법
+## 🏠 집에서 처음 시작하기 (프로젝트 폴더가 없는 경우)
 
-1. **프로젝트 열기**
+### 1단계: 작업할 폴더 생성
+원하는 위치에 폴더를 만듭니다. 예:
+- `C:\Projects\YU-rello`
+- `D:\dev\YU-rello`
+
+### 2단계: CMD(명령 프롬프트) 열기
+**방법 1:** 폴더에서 직접 열기
+1. 생성한 폴더를 파일 탐색기로 엽니다
+2. 주소창에 `cmd` 입력 후 Enter
+
+**방법 2:** 시작 메뉴에서 열기
+1. Windows 키 누름
+2. "cmd" 입력
+3. 명령 프롬프트 실행 후 폴더로 이동:
    ```bash
-   cd "C:\Users\ADMIN\AppData\Local\WEMEETS\yulink\yulink files\■■■Claude House■■■\yu-rello"
+   cd C:\Projects\YU-rello
    ```
 
-2. **최신 코드 확인**
-   ```bash
-   git pull origin master
-   git log --oneline -5
-   ```
+### 3단계: Git Clone
+```bash
+git clone https://github.com/ParkSanghyeok076/YU-rello.git .
+```
+**주의:** 마지막에 `.` (점)을 꼭 입력하세요! (현재 폴더에 클론)
 
-3. **개발 서버 실행**
-   ```bash
-   npm run dev
-   ```
+### 4단계: 패키지 설치
+```bash
+npm install
+```
+(2-3분 소요)
 
-4. **Task 7부터 시작**
-   - 구현 계획 문서 참고: `docs/plans/2026-02-20-yu-rello-implementation.md` (라인 1306부터)
-   - 또는 Claude에게 "Task 7부터 계속 진행해줘" 요청
+### 5단계: Claude Code 실행
+같은 CMD 창에서:
+```bash
+claude
+```
+
+### 6단계: Claude에게 작업 요청
+Claude가 실행되면 다음과 같이 입력:
+```
+Task 7부터 계속 진행해줘. PROGRESS.md 파일을 참고해.
+```
+
+또는
+
+```
+보드 상세 페이지(Task 7)부터 구현해줘
+```
+
+---
+
+## 🎯 다음 세션 시작 방법 (이미 프로젝트가 있는 경우)
+
+### 1단계: 프로젝트 폴더 열기
+```bash
+cd C:\Projects\YU-rello
+```
+(본인의 프로젝트 경로로 변경)
+
+### 2단계: 최신 코드 받기
+```bash
+git pull origin master
+```
+
+### 3단계: Claude Code 실행
+```bash
+claude
+```
+
+### 4단계: Claude에게 작업 요청
+```
+Task 7부터 계속 진행해줘
+```
+
+---
+
+## 💡 개발 서버 실행 (선택사항)
+
+작업하면서 실시간으로 화면을 보려면:
+
+**별도의 CMD 창을 열어서:**
+```bash
+cd C:\Projects\YU-rello
+npm run dev
+```
+
+그 다음 브라우저에서:
+```
+http://localhost:3000
+```
 
 ---
 
