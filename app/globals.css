@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
-@theme inline {
+@theme {
   --font-logo: 'Orbitron', sans-serif;
 
   /* Navy blue color palette */
-  --color-navy-DEFAULT: #1a2b4a;
+  --color-navy: #1a2b4a;
   --color-navy-light: #2a3b5a;
   --color-navy-dark: #0a1b3a;
 }

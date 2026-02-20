@@ -1,7 +1,7 @@
 import { createServerClient } from '@/lib/supabase/server'
 
 export default async function DashboardPage() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: boards } = await supabase
     .from('boards')
