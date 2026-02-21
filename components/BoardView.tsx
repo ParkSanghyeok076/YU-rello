@@ -157,8 +157,8 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
     ? lists
         .filter((list: any) =>
           list.list_members?.some((m: any) => m.user_id === userFilter) ||
-          list.cards.some((card: any) =>
-            card.card_members.some((m: any) => m.user_id === userFilter)
+          (list.cards ?? []).some((card: any) =>
+            (card.card_members ?? []).some((m: any) => m.user_id === userFilter)
           )
         )
         .map((list: any) => {
@@ -167,8 +167,8 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
             ...list,
             cards: isListMember
               ? list.cards
-              : list.cards.filter((card: any) =>
-                  card.card_members.some((m: any) => m.user_id === userFilter)
+              : (list.cards ?? []).filter((card: any) =>
+                  (card.card_members ?? []).some((m: any) => m.user_id === userFilter)
                 ),
           }
         })
