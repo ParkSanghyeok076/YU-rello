@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { ChecklistSection } from './ChecklistSection'
 import { LabelsSection } from './LabelsSection'
@@ -111,12 +112,18 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
   const boardId = (card as any).lists?.board_id || ''
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-8 overflow-y-auto"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.15 }}
+      className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-8 overflow-y-auto"
       onClick={onClose}
     >
-      <div
-        className="bg-white rounded-lg shadow-xl max-w-3xl w-full my-8"
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: -8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full my-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -244,7 +251,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
             🗑️ 카드 삭제
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
