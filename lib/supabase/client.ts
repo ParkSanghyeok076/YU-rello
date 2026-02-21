@@ -10,6 +10,7 @@ export type Database = {
           name: string
           avatar_url: string | null
           created_at: string
+          is_admin: boolean
         }
         Insert: {
           id: string
@@ -17,6 +18,7 @@ export type Database = {
           name: string
           avatar_url?: string | null
           created_at?: string
+          is_admin?: boolean
         }
         Update: {
           id?: string
@@ -24,6 +26,7 @@ export type Database = {
           name?: string
           avatar_url?: string | null
           created_at?: string
+          is_admin?: boolean
         }
         Relationships: []
       }
