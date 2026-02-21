@@ -8,6 +8,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { createClient } from '@/lib/supabase/client'
 import { Card } from './Card'
 import { CreateCardButton } from './CreateCardButton'
+import { ListMemberPicker } from './ListMemberPicker'
 
 type ListProps = {
   list: any
@@ -20,6 +21,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
   const [listTitle, setListTitle] = useState(list.title)
+  const [isMemberPickerOpen, setIsMemberPickerOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
@@ -111,6 +113,40 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
             />
           ) : (
             <h3 className="font-semibold text-white">{listTitle}</h3>
+          )}
+        </div>
+
+        {/* 멤버 아바타 + 피커 */}
+        <div className="relative flex items-center gap-1 mx-2">
+          {(list.list_members || []).slice(0, 3).map((m: any) => (
+            <div
+              key={m.user_id}
+              title={m.profiles?.name}
+              className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center -ml-1 first:ml-0 border border-[#161b22]"
+            >
+              {m.profiles?.name?.[0]?.toUpperCase()}
+            </div>
+          ))}
+          {(list.list_members || []).length > 3 && (
+            <div className="w-6 h-6 rounded-full bg-gray-500 text-white text-xs flex items-center justify-center -ml-1 border border-[#161b22]">
+              +{list.list_members.length - 3}
+            </div>
+          )}
+          <button
+            onClick={() => setIsMemberPickerOpen(prev => !prev)}
+            className="w-5 h-5 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center hover:bg-gray-500 transition-colors ml-1"
+            title="멤버 관리"
+          >
+            +
+          </button>
+
+          {isMemberPickerOpen && (
+            <ListMemberPicker
+              listId={list.id}
+              currentMembers={list.list_members || []}
+              onUpdate={() => { setIsMemberPickerOpen(false); onUpdate() }}
+              onClose={() => setIsMemberPickerOpen(false)}
+            />
           )}
         </div>
 
