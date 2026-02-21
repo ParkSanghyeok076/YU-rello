@@ -204,6 +204,21 @@ export type Database = {
         }
         Relationships: []
       }
+      board_members: {
+        Row: {
+          board_id: string
+          user_id: string
+        }
+        Insert: {
+          board_id: string
+          user_id: string
+        }
+        Update: {
+          board_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           id: string
