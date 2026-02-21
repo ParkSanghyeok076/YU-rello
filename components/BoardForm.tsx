@@ -34,6 +34,13 @@ export function BoardForm() {
 
       if (error) throw error
 
+      // 본인을 board_members에 등록
+      const { error: memberError } = await supabase
+        .from('board_members')
+        .insert({ board_id: (data as Board).id, user_id: user.id })
+
+      if (memberError) throw memberError
+
       router.push(`/board/${(data as Board).id}`)
       router.refresh()
     } catch (error: any) {
