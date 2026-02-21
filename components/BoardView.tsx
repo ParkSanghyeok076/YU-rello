@@ -23,20 +23,25 @@ import { CalendarView } from './CalendarView'
 import { CardModal } from './CardModal'
 import { createClient } from '@/lib/supabase/client'
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription'
+import { BoardMemberManager } from './BoardMemberManager'
 
 type BoardViewProps = {
   board: any
   initialLists: any[]
   users: Array<{ id: string; name: string; email: string }>
   currentUserId: string
+  boardMembers: Array<{ user_id: string; profiles?: any }>
+  isOwner: boolean
 }
 
-export function BoardView({ board, initialLists, users, currentUserId }: BoardViewProps) {
+export function BoardView({ board, initialLists, users, currentUserId, boardMembers: initialBoardMembers, isOwner }: BoardViewProps) {
   const [lists, setLists] = useState(initialLists)
   const [currentView, setCurrentView] = useState<'board' | 'calendar'>('board')
   const [userFilter, setUserFilter] = useState<string | null>(null)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [calendarCardId, setCalendarCardId] = useState<string | null>(null)
+  const [isMemberManagerOpen, setIsMemberManagerOpen] = useState(false)
+  const [boardMembers, setBoardMembers] = useState(initialBoardMembers)
   const supabase = createClient()
 
   // 현재 유저 이름 조회
@@ -59,6 +64,11 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
       .eq('board_id', board.id)
       .order('position', { ascending: true })
     if (data) setLists(data)
+    const { data: members } = await supabase
+      .from('board_members')
+      .select('user_id, profiles(*)')
+      .eq('board_id', board.id)
+    if (members) setBoardMembers(members)
   }
 
   useRealtimeSubscription(board.id, handleRefresh)
@@ -197,7 +207,50 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
           onDragCancel={handleDragCancel}
         >
           <div className="p-6 overflow-x-auto">
-            <h1 className="text-3xl font-bold text-white mb-6">{board.title}</h1>
+            <div className="flex items-center gap-4 mb-6 flex-wrap">
+              <h1 className="text-3xl font-bold text-white">{board.title}</h1>
+
+              {/* 멤버 아바타 */}
+              <div className="flex items-center">
+                {boardMembers.slice(0, 3).map((m: any) => (
+                  <div
+                    key={m.user_id}
+                    title={m.profiles?.name}
+                    className="w-8 h-8 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center -ml-1 first:ml-0 border-2 border-[#0d1117]"
+                  >
+                    {m.profiles?.name?.[0]?.toUpperCase()}
+                  </div>
+                ))}
+                {boardMembers.length > 3 && (
+                  <div className="w-8 h-8 rounded-full bg-gray-500 text-white text-xs flex items-center justify-center -ml-1 border-2 border-[#0d1117]">
+                    +{boardMembers.length - 3}
+                  </div>
+                )}
+              </div>
+
+              {/* 멤버 관리 버튼 (owner만) */}
+              {isOwner && (
+                <div className="relative">
+                  <button
+                    onClick={() => setIsMemberManagerOpen(prev => !prev)}
+                    className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
+                  >
+                    + 멤버 초대
+                  </button>
+                  {isMemberManagerOpen && (
+                    <BoardMemberManager
+                      boardId={board.id}
+                      currentMembers={boardMembers}
+                      users={users}
+                      isOwner={isOwner}
+                      currentUserId={currentUserId}
+                      onUpdate={() => { setIsMemberManagerOpen(false); handleRefresh() }}
+                      onClose={() => setIsMemberManagerOpen(false)}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
 
             <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
               <div className="flex gap-4 items-start">
@@ -231,7 +284,50 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
         </DndContext>
       ) : (
         <div className="p-6">
-          <h1 className="text-3xl font-bold text-white mb-6">{board.title}</h1>
+          <div className="flex items-center gap-4 mb-6 flex-wrap">
+            <h1 className="text-3xl font-bold text-white">{board.title}</h1>
+
+            {/* 멤버 아바타 */}
+            <div className="flex items-center">
+              {boardMembers.slice(0, 3).map((m: any) => (
+                <div
+                  key={m.user_id}
+                  title={m.profiles?.name}
+                  className="w-8 h-8 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center -ml-1 first:ml-0 border-2 border-[#0d1117]"
+                >
+                  {m.profiles?.name?.[0]?.toUpperCase()}
+                </div>
+              ))}
+              {boardMembers.length > 3 && (
+                <div className="w-8 h-8 rounded-full bg-gray-500 text-white text-xs flex items-center justify-center -ml-1 border-2 border-[#0d1117]">
+                  +{boardMembers.length - 3}
+                </div>
+              )}
+            </div>
+
+            {/* 멤버 관리 버튼 (owner만) */}
+            {isOwner && (
+              <div className="relative">
+                <button
+                  onClick={() => setIsMemberManagerOpen(prev => !prev)}
+                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
+                >
+                  + 멤버 초대
+                </button>
+                {isMemberManagerOpen && (
+                  <BoardMemberManager
+                    boardId={board.id}
+                    currentMembers={boardMembers}
+                    users={users}
+                    isOwner={isOwner}
+                    currentUserId={currentUserId}
+                    onUpdate={() => { setIsMemberManagerOpen(false); handleRefresh() }}
+                    onClose={() => setIsMemberManagerOpen(false)}
+                  />
+                )}
+              </div>
+            )}
+          </div>
           <CalendarView
             lists={filteredLists}
             onCardClick={(cardId) => setCalendarCardId(cardId)}
