@@ -47,6 +47,11 @@ export function useRealtimeSubscription(boardId: string, onRefresh: () => void) 
       .on('postgres_changes', { event: '*', schema: 'public', table: 'card_members' }, refresh)
       .subscribe()
 
+    const listMembersChannel = supabase
+      .channel(`board-${boardId}-list-members`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'list_members' }, refresh)
+      .subscribe()
+
     return () => {
       supabase.removeChannel(listsChannel)
       supabase.removeChannel(cardsChannel)
@@ -55,6 +60,7 @@ export function useRealtimeSubscription(boardId: string, onRefresh: () => void) 
       supabase.removeChannel(labelsChannel)
       supabase.removeChannel(cardLabelsChannel)
       supabase.removeChannel(cardMembersChannel)
+      supabase.removeChannel(listMembersChannel)
     }
   }, [boardId])
 }
