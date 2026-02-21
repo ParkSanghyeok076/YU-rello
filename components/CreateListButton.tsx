@@ -46,15 +46,15 @@ export function CreateListButton({ boardId, currentPosition, onListCreated }: Cr
     return (
       <button
         onClick={() => setIsAdding(true)}
-        className="flex-shrink-0 w-72 p-4 bg-navy-light hover:bg-navy-dark rounded-lg transition-colors text-left"
+        className="flex-shrink-0 w-72 p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors text-left"
       >
-        <span className="text-white">+ 리스트 추가</span>
+        <span className="text-white/80 text-sm">+ 리스트 추가</span>
       </button>
     )
   }
 
   return (
-    <div className="flex-shrink-0 w-72 bg-white rounded-lg p-4">
+    <div className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3">
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -62,13 +62,13 @@ export function CreateListButton({ boardId, currentPosition, onListCreated }: Cr
           onChange={(e) => setTitle(e.target.value)}
           placeholder="리스트 제목 입력..."
           autoFocus
-          className="w-full px-3 py-2 border border-gray-300 rounded text-navy mb-2 focus:outline-none focus:ring-2 focus:ring-navy"
+          className="w-full px-3 py-2 border border-gray-600 bg-[#2d333b] rounded text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 text-sm"
         />
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={loading || !title.trim()}
-            className="px-3 py-1 bg-navy text-white rounded hover:bg-navy-light disabled:opacity-50"
+            className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {loading ? '추가 중...' : '리스트 추가'}
           </button>
@@ -78,7 +78,7 @@ export function CreateListButton({ boardId, currentPosition, onListCreated }: Cr
               setIsAdding(false)
               setTitle('')
             }}
-            className="px-3 py-1 text-gray-600 hover:text-gray-800"
+            className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors"
           >
             취소
           </button>
