@@ -42,17 +42,6 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
   // 현재 유저 이름 조회
   const currentUserName = users.find(u => u.id === currentUserId)?.name || 'User'
 
-  useRealtimeSubscription(board.id)
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  )
-
   const handleRefresh = async () => {
     const { data } = await supabase
       .from('lists')
@@ -70,6 +59,17 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
       .order('position', { ascending: true })
     if (data) setLists(data)
   }
+
+  useRealtimeSubscription(board.id, handleRefresh)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const handleDragStart = (event: any) => {
     setActiveId(event.active.id)
