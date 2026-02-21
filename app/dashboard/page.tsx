@@ -1,5 +1,6 @@
 import { createServerClient } from '@/lib/supabase/server'
 import { Database } from '@/lib/supabase/client'
+import { BoardCard } from '@/components/BoardCard'
 
 type Board = Database['public']['Tables']['boards']['Row']
 
@@ -19,16 +20,7 @@ export default async function DashboardPage() {
         {boards && boards.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {boards.map((board) => (
-              <a
-                key={board.id}
-                href={`/board/${board.id}`}
-                className="p-6 bg-white text-navy rounded-lg hover:shadow-lg transition-shadow"
-              >
-                <h3 className="text-lg font-semibold">{board.title}</h3>
-                <p className="text-sm text-gray-600 mt-2">
-                  생성일: {new Date(board.created_at).toLocaleDateString('ko-KR')}
-                </p>
-              </a>
+              <BoardCard key={board.id} board={board} />
             ))}
           </div>
         ) : (
