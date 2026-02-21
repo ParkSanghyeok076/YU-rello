@@ -1,6 +1,6 @@
 # YU-rello 개발 진행 상황
 
-**마지막 업데이트:** 2026-02-20
+**마지막 업데이트:** 2026-02-21
 
 ---
 
@@ -43,39 +43,24 @@
 
 ---
 
-## 🚧 다음 작업 (Task 7부터)
+### Phase 3: 보드 & 카드 기능
+- ✅ **Task 7:** 보드 상세 페이지
+  - `app/board/[id]/page.tsx` - 동적 라우트 (인증 포함)
+  - `components/BoardView.tsx` - 보드 뷰 (툴바, 유저 필터)
+  - `components/List.tsx` - 리스트 컴포넌트
+  - `components/Card.tsx` - 카드 (레이블, 체크리스트 진행도, 댓글 수)
 
-### Task 7: 보드 상세 페이지 (진행 예정)
-**파일:**
-- `app/board/[id]/page.tsx` - 동적 라우트
-- `components/BoardView.tsx` - 보드 뷰 컴포넌트
-- `components/List.tsx` - 리스트 컴포넌트
-- `components/Card.tsx` - 카드 컴포넌트
+- ✅ **Task 8:** 리스트 생성 기능
+  - `components/CreateListButton.tsx` - 인라인 폼으로 리스트 추가
+  - Supabase에 리스트 저장, router.refresh()로 자동 갱신
 
-**기능:**
-- 보드 내 리스트 목록 표시
-- 각 리스트의 카드 표시
-- 레이블, 체크리스트 진행도, 댓글 수 표시
-- 사용자 필터링
-
-**구현 계획:** `docs/plans/2026-02-20-yu-rello-implementation.md` 라인 1306-1589 참고
+- ✅ **Task 9:** 카드 생성 기능
+  - `components/CreateCardButton.tsx` - textarea 폼으로 카드 추가
+  - Supabase에 카드 저장, position 순서 관리
 
 ---
 
-### Task 8: 리스트 생성 기능
-**파일:**
-- `components/CreateListButton.tsx`
-- `components/BoardView.tsx` (수정)
-
----
-
-### Task 9: 카드 CRUD 기능
-**파일:**
-- `components/CreateCardButton.tsx`
-- `components/CardModal.tsx`
-- 카드 생성/수정/삭제 기능
-
----
+## 🚧 다음 작업 (Task 10부터)
 
 ### Task 10: Drag & Drop
 **파일:**
@@ -103,6 +88,20 @@ http://localhost:3000
 
 ### 4. 개발 서버 종료
 터미널에서 `Ctrl + C`
+
+---
+
+## 👤 Git 계정 정보
+
+- **이름:** ParkSanghyeok076
+- **이메일:** psh092929@gmail.com
+- **GitHub:** https://github.com/ParkSanghyeok076/YU-rello
+
+새 PC에서 처음 커밋 시 아래 명령어 실행:
+```bash
+git config user.email "psh092929@gmail.com"
+git config user.name "ParkSanghyeok076"
+```
 
 ---
 
