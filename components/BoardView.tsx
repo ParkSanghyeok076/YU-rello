@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import {
   DndContext,
   DragOverlay,
@@ -38,7 +37,6 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
   const [userFilter, setUserFilter] = useState<string | null>(null)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [calendarCardId, setCalendarCardId] = useState<string | null>(null)
-  const router = useRouter()
   const supabase = createClient()
 
   // 현재 유저 이름 조회
@@ -55,8 +53,22 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
     })
   )
 
-  const handleRefresh = () => {
-    router.refresh()
+  const handleRefresh = async () => {
+    const { data } = await supabase
+      .from('lists')
+      .select(`
+        *,
+        cards (
+          *,
+          card_labels (label_id, labels (*)),
+          card_members (user_id, profiles (*)),
+          checklist_items (*),
+          comments (*)
+        )
+      `)
+      .eq('board_id', board.id)
+      .order('position', { ascending: true })
+    if (data) setLists(data)
   }
 
   const handleDragStart = (event: any) => {
@@ -156,7 +168,7 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
     : null
 
   return (
-    <div className="min-h-screen bg-navy">
+    <div className="min-h-screen bg-dark-bg">
       <Toolbar
         onViewChange={setCurrentView}
         onUserFilterChange={setUserFilter}
