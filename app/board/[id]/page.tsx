@@ -27,6 +27,18 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
     redirect('/dashboard')
   }
 
+  // 명시적 멤버십 확인 (RLS 보완용 방어 코드)
+  const { data: membership } = await supabase
+    .from('board_members')
+    .select('user_id')
+    .eq('board_id', id)
+    .eq('user_id', session.user.id)
+    .maybeSingle()
+
+  if (!membership) {
+    redirect('/dashboard')
+  }
+
   // Fetch lists with cards (complex nested join — typed via any to avoid deep inference issues)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: lists } = await supabase

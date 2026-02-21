@@ -203,6 +203,53 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
     ? lists.flatMap(list => list.cards).find((card: any) => card.id === activeId)
     : null
 
+  const boardHeaderUI = (
+    <div className="flex items-center gap-4 mb-6 flex-wrap">
+      <h1 className="text-3xl font-bold text-white">{board.title}</h1>
+
+      {/* 멤버 아바타 */}
+      <div className="flex items-center">
+        {boardMembers.slice(0, 3).map((m: any) => (
+          <div
+            key={m.user_id}
+            title={m.profiles?.name}
+            className="w-8 h-8 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center -ml-1 first:ml-0 border-2 border-[#0d1117]"
+          >
+            {m.profiles?.name?.[0]?.toUpperCase()}
+          </div>
+        ))}
+        {boardMembers.length > 3 && (
+          <div className="w-8 h-8 rounded-full bg-gray-500 text-white text-xs flex items-center justify-center -ml-1 border-2 border-[#0d1117]">
+            +{boardMembers.length - 3}
+          </div>
+        )}
+      </div>
+
+      {/* 멤버 관리 버튼 (owner만) */}
+      {isOwner && (
+        <div className="relative" ref={memberManagerRef}>
+          <button
+            onClick={() => setIsMemberManagerOpen(prev => !prev)}
+            className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
+          >
+            + 멤버 초대
+          </button>
+          {isMemberManagerOpen && (
+            <BoardMemberManager
+              boardId={board.id}
+              currentMembers={boardMembers}
+              users={users}
+              isOwner={isOwner}
+              currentUserId={currentUserId}
+              onUpdate={() => { setIsMemberManagerOpen(false); handleRefresh() }}
+              onClose={() => setIsMemberManagerOpen(false)}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-dark-bg">
       <Toolbar
@@ -220,50 +267,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
           onDragCancel={handleDragCancel}
         >
           <div className="p-6 overflow-x-auto">
-            <div className="flex items-center gap-4 mb-6 flex-wrap">
-              <h1 className="text-3xl font-bold text-white">{board.title}</h1>
-
-              {/* 멤버 아바타 */}
-              <div className="flex items-center">
-                {boardMembers.slice(0, 3).map((m: any) => (
-                  <div
-                    key={m.user_id}
-                    title={m.profiles?.name}
-                    className="w-8 h-8 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center -ml-1 first:ml-0 border-2 border-[#0d1117]"
-                  >
-                    {m.profiles?.name?.[0]?.toUpperCase()}
-                  </div>
-                ))}
-                {boardMembers.length > 3 && (
-                  <div className="w-8 h-8 rounded-full bg-gray-500 text-white text-xs flex items-center justify-center -ml-1 border-2 border-[#0d1117]">
-                    +{boardMembers.length - 3}
-                  </div>
-                )}
-              </div>
-
-              {/* 멤버 관리 버튼 (owner만) */}
-              {isOwner && (
-                <div className="relative" ref={memberManagerRef}>
-                  <button
-                    onClick={() => setIsMemberManagerOpen(prev => !prev)}
-                    className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
-                  >
-                    + 멤버 초대
-                  </button>
-                  {isMemberManagerOpen && (
-                    <BoardMemberManager
-                      boardId={board.id}
-                      currentMembers={boardMembers}
-                      users={users}
-                      isOwner={isOwner}
-                      currentUserId={currentUserId}
-                      onUpdate={() => { setIsMemberManagerOpen(false); handleRefresh() }}
-                      onClose={() => setIsMemberManagerOpen(false)}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
+            {boardHeaderUI}
 
             <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
               <div className="flex gap-4 items-start">
@@ -297,50 +301,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
         </DndContext>
       ) : (
         <div className="p-6">
-          <div className="flex items-center gap-4 mb-6 flex-wrap">
-            <h1 className="text-3xl font-bold text-white">{board.title}</h1>
-
-            {/* 멤버 아바타 */}
-            <div className="flex items-center">
-              {boardMembers.slice(0, 3).map((m: any) => (
-                <div
-                  key={m.user_id}
-                  title={m.profiles?.name}
-                  className="w-8 h-8 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center -ml-1 first:ml-0 border-2 border-[#0d1117]"
-                >
-                  {m.profiles?.name?.[0]?.toUpperCase()}
-                </div>
-              ))}
-              {boardMembers.length > 3 && (
-                <div className="w-8 h-8 rounded-full bg-gray-500 text-white text-xs flex items-center justify-center -ml-1 border-2 border-[#0d1117]">
-                  +{boardMembers.length - 3}
-                </div>
-              )}
-            </div>
-
-            {/* 멤버 관리 버튼 (owner만) */}
-            {isOwner && (
-              <div className="relative" ref={memberManagerRef}>
-                <button
-                  onClick={() => setIsMemberManagerOpen(prev => !prev)}
-                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
-                >
-                  + 멤버 초대
-                </button>
-                {isMemberManagerOpen && (
-                  <BoardMemberManager
-                    boardId={board.id}
-                    currentMembers={boardMembers}
-                    users={users}
-                    isOwner={isOwner}
-                    currentUserId={currentUserId}
-                    onUpdate={() => { setIsMemberManagerOpen(false); handleRefresh() }}
-                    onClose={() => setIsMemberManagerOpen(false)}
-                  />
-                )}
-              </div>
-            )}
-          </div>
+          {boardHeaderUI}
           <CalendarView
             lists={filteredLists}
             onCardClick={(cardId) => setCalendarCardId(cardId)}

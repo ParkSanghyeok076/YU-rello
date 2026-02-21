@@ -54,7 +54,7 @@ export function useRealtimeSubscription(boardId: string, onRefresh: () => void) 
 
     const boardMembersChannel = supabase
       .channel(`board-${boardId}-board-members`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'board_members' }, refresh)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'board_members', filter: `board_id=eq.${boardId}` }, refresh)
       .subscribe()
 
     return () => {
