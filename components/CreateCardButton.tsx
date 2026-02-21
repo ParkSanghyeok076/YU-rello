@@ -46,15 +46,16 @@ export function CreateCardButton({ listId, currentPosition, onCardCreated }: Cre
     return (
       <button
         onClick={() => setIsAdding(true)}
-        className="w-full p-2 text-left text-gray-600 hover:bg-gray-100 rounded transition-colors"
+        className="w-full p-2 text-left text-gray-400 hover:bg-dark-list-hover hover:text-white rounded-lg transition-colors flex items-center gap-1"
       >
-        + 카드 추가
+        <span className="text-lg leading-none">+</span>
+        <span className="text-sm">카드 추가</span>
       </button>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg p-2 shadow">
+    <div className="bg-[#22272e] rounded-lg p-2 shadow-lg">
       <form onSubmit={handleSubmit}>
         <textarea
           value={title}
@@ -62,13 +63,13 @@ export function CreateCardButton({ listId, currentPosition, onCardCreated }: Cre
           placeholder="카드 제목을 입력하세요..."
           autoFocus
           rows={3}
-          className="w-full px-2 py-1 border border-gray-300 rounded text-navy resize-none focus:outline-none focus:ring-2 focus:ring-navy"
+          className="w-full px-2 py-1.5 border border-gray-600 bg-[#2d333b] rounded text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 text-sm"
         />
         <div className="flex gap-2 mt-2">
           <button
             type="submit"
             disabled={loading || !title.trim()}
-            className="px-3 py-1 bg-navy text-white text-sm rounded hover:bg-navy-light disabled:opacity-50"
+            className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {loading ? '추가 중...' : '카드 추가'}
           </button>
@@ -78,7 +79,7 @@ export function CreateCardButton({ listId, currentPosition, onCardCreated }: Cre
               setIsAdding(false)
               setTitle('')
             }}
-            className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+            className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors"
           >
             취소
           </button>
