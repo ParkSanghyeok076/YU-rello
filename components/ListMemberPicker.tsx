@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 
 type ListMemberPickerProps = {
   listId: string
-  currentMembers: any[]
+  currentMembers: Array<{ user_id: string; profiles?: any }>
   onUpdate: () => void
   onClose: () => void
 }
@@ -31,16 +31,14 @@ export function ListMemberPicker({ listId, currentMembers, onUpdate, onClose }: 
     setLoading(true)
     try {
       if (isAssigned) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await (supabase as any)
+        const { error } = await supabase
           .from('list_members')
           .delete()
           .eq('list_id', listId)
           .eq('user_id', userId)
         if (error) throw error
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await (supabase as any)
+        const { error } = await supabase
           .from('list_members')
           .insert({ list_id: listId, user_id: userId })
         if (error) throw error

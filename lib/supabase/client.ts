@@ -189,6 +189,21 @@ export type Database = {
         }
         Relationships: []
       }
+      list_members: {
+        Row: {
+          list_id: string
+          user_id: string
+        }
+        Insert: {
+          list_id: string
+          user_id: string
+        }
+        Update: {
+          list_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           id: string
