@@ -76,11 +76,33 @@
 
 ---
 
-## 🚧 다음 작업 (Task 13부터)
+- ✅ **Task 13:** 체크리스트 아이템
+  - `ChecklistItem` - 토글/편집/삭제, 마감일 지정
+  - `ChecklistSection` - 진행률 바 포함
 
-### Task 13: 체크리스트 아이템
-### Task 14: 레이블 시스템
-### Task 15: 댓글 시스템
+- ✅ **Task 14:** 레이블 시스템
+  - `LabelPicker` - 8가지 컬러 프리셋, 보드 레이블 생성/토글
+  - `LabelsSection` - 카드 모달 내 레이블 섹션
+
+- ✅ **Task 15:** 댓글 시스템
+  - `Comment` - 작성자만 수정/삭제, 상대적 시간 표시
+  - `CommentsSection` - 댓글 추가 폼
+
+- ✅ **Task 16:** 멤버 할당
+  - `MemberPicker` - 전체 유저 목록에서 카드 멤버 추가/제거
+  - `MembersSection` - 카드 모달 내 멤버 섹션
+
+- ✅ **Task 17:** 달력 뷰
+  - `CalendarView` - FullCalendar로 체크리스트/카드 마감일 표시
+  - 달력 이벤트 클릭 시 카드 모달 오픈
+
+---
+
+## 🚧 다음 작업 (Task 18부터)
+
+### Task 18: 알림 시스템
+### Task 19: 유저 필터링 (백엔드)
+### Task 20: 실시간 업데이트
 
 ---
 
