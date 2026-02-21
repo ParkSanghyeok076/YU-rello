@@ -5,7 +5,7 @@ export default function LoginPage() {
     <div
       className="min-h-screen flex items-center justify-center"
       style={{
-        backgroundImage: "url('/로그인 배경.png')",
+        backgroundImage: "url('/로그인 배경 2.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
