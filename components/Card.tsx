@@ -8,9 +8,11 @@ import { CardModal } from './CardModal'
 type CardProps = {
   card: any
   onUpdate?: () => void
+  currentUserId?: string
+  currentUserName?: string
 }
 
-export function Card({ card, onUpdate }: CardProps) {
+export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'User' }: CardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const {
@@ -49,7 +51,7 @@ export function Card({ card, onUpdate }: CardProps) {
               <div
                 key={cl.label_id}
                 className="h-2 w-10 rounded"
-                style={{ backgroundColor: cl.labels.color }}
+                style={{ backgroundColor: cl.labels?.color }}
               />
             ))}
           </div>
@@ -98,6 +100,8 @@ export function Card({ card, onUpdate }: CardProps) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onUpdate={onUpdate || (() => {})}
+        currentUserId={currentUserId}
+        currentUserName={currentUserName}
       />
     </>
   )

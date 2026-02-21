@@ -9,12 +9,12 @@ import { CreateCardButton } from './CreateCardButton'
 type ListProps = {
   list: any
   onUpdate: () => void
+  currentUserId?: string
+  currentUserName?: string
 }
 
-export function List({ list, onUpdate }: ListProps) {
-  const { setNodeRef: setDroppableRef } = useDroppable({
-    id: list.id,
-  })
+export function List({ list, onUpdate, currentUserId, currentUserName }: ListProps) {
+  const { setNodeRef: setDroppableRef } = useDroppable({ id: list.id })
 
   const {
     attributes,
@@ -55,7 +55,13 @@ export function List({ list, onUpdate }: ListProps) {
           {list.cards
             .sort((a: any, b: any) => a.position - b.position)
             .map((card: any) => (
-              <Card key={card.id} card={card} onUpdate={onUpdate} />
+              <Card
+                key={card.id}
+                card={card}
+                onUpdate={onUpdate}
+                currentUserId={currentUserId}
+                currentUserName={currentUserName}
+              />
             ))}
         </div>
       </SortableContext>

@@ -20,6 +20,8 @@ import {
 import { Toolbar } from './Toolbar'
 import { List } from './List'
 import { CreateListButton } from './CreateListButton'
+import { CalendarView } from './CalendarView'
+import { CardModal } from './CardModal'
 import { createClient } from '@/lib/supabase/client'
 
 type BoardViewProps = {
@@ -34,14 +36,16 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
   const [currentView, setCurrentView] = useState<'board' | 'calendar'>('board')
   const [userFilter, setUserFilter] = useState<string | null>(null)
   const [activeId, setActiveId] = useState<string | null>(null)
+  const [calendarCardId, setCalendarCardId] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
+  // 현재 유저 이름 조회
+  const currentUserName = users.find(u => u.id === currentUserId)?.name || 'User'
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8, // 8px 이상 움직여야 드래그 시작 (클릭과 구분)
-      },
+      activationConstraint: { distance: 8 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -64,7 +68,7 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
       return
     }
 
-    // 리스트 드래그 처리
+    // 리스트 드래그
     if (active.id.toString().startsWith('list-')) {
       const activeListId = active.id.toString().replace('list-', '')
       const overListId = over.id.toString().replace('list-', '')
@@ -74,14 +78,9 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
 
       if (oldIndex !== newIndex) {
         const newLists = arrayMove(lists, oldIndex, newIndex)
-
         for (let i = 0; i < newLists.length; i++) {
-          await supabase
-            .from('lists')
-            .update({ position: i })
-            .eq('id', newLists[i].id)
+          await supabase.from('lists').update({ position: i }).eq('id', newLists[i].id)
         }
-
         handleRefresh()
       }
 
@@ -89,7 +88,7 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
       return
     }
 
-    // 카드 드래그 처리
+    // 카드 드래그
     const activeCard = lists
       .flatMap(list => list.cards)
       .find((card: any) => card.id === active.id)
@@ -112,33 +111,22 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
     const newListId = overList.id
 
     if (oldListId === newListId) {
-      // 같은 리스트 내 재정렬
       const oldList = lists.find((list: any) => list.id === oldListId)
       const oldIndex = oldList.cards.findIndex((card: any) => card.id === active.id)
       const newIndex = oldList.cards.findIndex((card: any) => card.id === over.id)
 
       if (oldIndex !== newIndex) {
         const newCards = arrayMove(oldList.cards, oldIndex, newIndex)
-
         for (let i = 0; i < newCards.length; i++) {
-          await supabase
-            .from('cards')
-            .update({ position: i })
-            .eq('id', newCards[i].id)
+          await supabase.from('cards').update({ position: i }).eq('id', newCards[i].id)
         }
-
         handleRefresh()
       }
     } else {
-      // 다른 리스트로 이동
       await supabase
         .from('cards')
-        .update({
-          list_id: newListId,
-          position: overList.cards.length,
-        })
+        .update({ list_id: newListId, position: overList.cards.length })
         .eq('id', active.id)
-
       handleRefresh()
     }
 
@@ -149,7 +137,6 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
     setActiveId(null)
   }
 
-  // 유저 필터링
   const filteredLists = userFilter
     ? lists.map(list => ({
         ...list,
@@ -191,6 +178,8 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
                     key={list.id}
                     list={list}
                     onUpdate={handleRefresh}
+                    currentUserId={currentUserId}
+                    currentUserName={currentUserName}
                   />
                 ))}
 
@@ -213,8 +202,24 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
         </DndContext>
       ) : (
         <div className="p-6">
-          <p className="text-gray-400">달력 뷰는 나중에 구현됩니다.</p>
+          <h1 className="text-3xl font-bold text-white mb-6">{board.title}</h1>
+          <CalendarView
+            lists={filteredLists}
+            onCardClick={(cardId) => setCalendarCardId(cardId)}
+          />
         </div>
+      )}
+
+      {/* 캘린더에서 카드 클릭 시 모달 */}
+      {calendarCardId && (
+        <CardModal
+          cardId={calendarCardId}
+          isOpen={true}
+          onClose={() => setCalendarCardId(null)}
+          onUpdate={handleRefresh}
+          currentUserId={currentUserId}
+          currentUserName={currentUserName}
+        />
       )}
     </div>
   )

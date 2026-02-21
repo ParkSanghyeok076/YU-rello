@@ -2,15 +2,21 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { ChecklistSection } from './ChecklistSection'
+import { LabelsSection } from './LabelsSection'
+import { MembersSection } from './MembersSection'
+import { CommentsSection } from './CommentsSection'
 
 type CardModalProps = {
   cardId: string
   isOpen: boolean
   onClose: () => void
   onUpdate: () => void
+  currentUserId: string
+  currentUserName: string
 }
 
-export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps) {
+export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, currentUserName }: CardModalProps) {
   const [card, setCard] = useState<any>(null)
   const [description, setDescription] = useState('')
   const [isEditingDescription, setIsEditingDescription] = useState(false)
@@ -28,7 +34,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps)
       .from('cards')
       .select(`
         *,
-        lists (title),
+        lists (title, board_id),
         card_labels (
           label_id,
           labels (*)
@@ -48,7 +54,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps)
 
     if (data) {
       setCard(data)
-      setDescription(data.description || '')
+      setDescription((data as any).description || '')
     }
   }
 
@@ -95,7 +101,14 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps)
     }
   }
 
+  const handleSectionUpdate = () => {
+    fetchCard()
+    onUpdate()
+  }
+
   if (!isOpen || !card) return null
+
+  const boardId = (card as any).lists?.board_id || ''
 
   return (
     <div
@@ -110,24 +123,24 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps)
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              {/* Labels */}
-              {card.card_labels?.length > 0 && (
+              {/* Labels preview */}
+              {(card as any).card_labels?.length > 0 && (
                 <div className="flex gap-2 mb-3">
-                  {card.card_labels.map((cl: any) => (
+                  {(card as any).card_labels.map((cl: any) => (
                     <span
                       key={cl.label_id}
                       className="px-3 py-1 rounded text-white text-sm"
-                      style={{ backgroundColor: cl.labels.color }}
+                      style={{ backgroundColor: cl.labels?.color }}
                     >
-                      {cl.labels.name}
+                      {cl.labels?.name}
                     </span>
                   ))}
                 </div>
               )}
 
-              <h2 className="text-2xl font-bold text-navy">{card.title}</h2>
+              <h2 className="text-2xl font-bold text-navy">{(card as any).title}</h2>
               <p className="text-sm text-gray-600 mt-1">
-                in list <span className="font-medium">{card.lists?.title}</span>
+                in list <span className="font-medium">{(card as any).lists?.title}</span>
               </p>
             </div>
 
@@ -165,7 +178,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps)
                   <button
                     onClick={() => {
                       setIsEditingDescription(false)
-                      setDescription(card.description || '')
+                      setDescription((card as any).description || '')
                     }}
                     className="px-4 py-2 bg-gray-200 text-navy rounded hover:bg-gray-300"
                   >
@@ -178,8 +191,8 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps)
                 onClick={() => setIsEditingDescription(true)}
                 className="p-3 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 transition-colors min-h-[100px]"
               >
-                {card.description ? (
-                  <p className="text-navy whitespace-pre-wrap">{card.description}</p>
+                {(card as any).description ? (
+                  <p className="text-navy whitespace-pre-wrap">{(card as any).description}</p>
                 ) : (
                   <p className="text-gray-400">설명을 추가하려면 클릭하세요...</p>
                 )}
@@ -188,41 +201,39 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate }: CardModalProps)
           </div>
 
           {/* Checklist */}
-          <div>
-            <h3 className="text-lg font-semibold text-navy mb-2">✓ 체크리스트</h3>
-            <p className="text-gray-400 text-sm">체크리스트 기능은 나중에 추가됩니다.</p>
-          </div>
+          <ChecklistSection
+            cardId={cardId}
+            items={(card as any).checklist_items || []}
+            onUpdate={handleSectionUpdate}
+          />
+
+          {/* Labels */}
+          <LabelsSection
+            boardId={boardId}
+            cardId={cardId}
+            labels={(card as any).card_labels || []}
+            onUpdate={handleSectionUpdate}
+          />
 
           {/* Members */}
-          <div>
-            <h3 className="text-lg font-semibold text-navy mb-2">👥 멤버</h3>
-            <div className="flex gap-2">
-              {card.card_members?.map((member: any) => (
-                <div
-                  key={member.user_id}
-                  className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded"
-                >
-                  <div className="w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center">
-                    {member.profiles?.name?.[0]?.toUpperCase()}
-                  </div>
-                  <span className="text-sm text-navy">{member.profiles?.name}</span>
-                </div>
-              ))}
-              {card.card_members?.length === 0 && (
-                <p className="text-gray-400 text-sm">멤버 할당 기능은 나중에 추가됩니다.</p>
-              )}
-            </div>
-          </div>
+          <MembersSection
+            cardId={cardId}
+            members={(card as any).card_members || []}
+            onUpdate={handleSectionUpdate}
+          />
 
           {/* Comments */}
-          <div>
-            <h3 className="text-lg font-semibold text-navy mb-2">💬 댓글</h3>
-            <p className="text-gray-400 text-sm">댓글 기능은 나중에 추가됩니다.</p>
-          </div>
+          <CommentsSection
+            cardId={cardId}
+            comments={(card as any).comments || []}
+            currentUserId={currentUserId}
+            currentUserName={currentUserName}
+            onUpdate={handleSectionUpdate}
+          />
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 flex justify-between">
+        <div className="p-6 border-t border-gray-200">
           <button
             onClick={handleDeleteCard}
             disabled={loading}
