@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { CardModal } from './CardModal'
@@ -27,7 +28,6 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
   }
 
   const completedItems = card.checklist_items?.filter((item: any) => item.completed).length || 0
@@ -36,14 +36,27 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
 
   return (
     <>
-      <div
+      <motion.div
         ref={setNodeRef}
         style={style}
         {...attributes}
         {...listeners}
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: isDragging ? 0.4 : 1, y: 0 }}
+        transition={{ duration: 0.15 }}
+        whileHover={{ y: -2, transition: { duration: 0.1 } }}
         onClick={() => setIsModalOpen(true)}
-        className="bg-white border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+        className="relative group bg-white border border-gray-200 rounded-lg p-3 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
       >
+        {/* Hover edit button */}
+        <button
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-500 text-xs z-10"
+          onClick={(e) => { e.stopPropagation(); setIsModalOpen(true) }}
+          title="편집"
+        >
+          ✎
+        </button>
+
         {/* Labels */}
         {card.card_labels?.length > 0 && (
           <div className="flex gap-1 mb-2">
@@ -58,22 +71,26 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
         )}
 
         {/* Title */}
-        <p className="text-navy font-medium mb-2">{card.title}</p>
+        <p className="text-gray-800 font-medium mb-2 pr-6">{card.title}</p>
 
         {/* Metadata */}
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
           {totalItems > 0 && (
-            <span className="flex items-center gap-1">
+            <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium ${
+              completedItems === totalItems
+                ? 'bg-green-100 text-green-700'
+                : 'bg-gray-100 text-gray-600'
+            }`}>
               ✓ {completedItems}/{totalItems}
             </span>
           )}
           {hasComments && (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1 text-xs text-gray-500">
               💬 {card.comments.length}
             </span>
           )}
           {card.due_date && (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1 text-xs text-gray-500">
               📅 {new Date(card.due_date).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}
             </span>
           )}
@@ -85,7 +102,7 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
             {card.card_members.slice(0, 3).map((member: any) => (
               <div
                 key={member.user_id}
-                className="w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center"
+                className="w-6 h-6 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center font-medium"
                 title={member.profiles?.name}
               >
                 {member.profiles?.name?.[0]?.toUpperCase()}
@@ -93,7 +110,7 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
 
       <CardModal
         cardId={card.id}
