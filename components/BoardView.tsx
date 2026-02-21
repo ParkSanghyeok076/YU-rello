@@ -226,7 +226,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
         )}
       </div>
 
-      {/* 멤버 관리 버튼 (owner만) */}
+      {/* 멤버 관리 버튼 (owner 또는 admin) */}
       {(isOwner || isAdmin) && (
         <div className="relative" ref={memberManagerRef}>
           <button
@@ -241,6 +241,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
               currentMembers={boardMembers}
               users={users}
               isOwner={isOwner}
+              isAdmin={isAdmin}
               currentUserId={currentUserId}
               onUpdate={() => { setIsMemberManagerOpen(false); handleRefresh() }}
               onClose={() => setIsMemberManagerOpen(false)}

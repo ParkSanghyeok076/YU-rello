@@ -8,6 +8,7 @@ type BoardMemberManagerProps = {
   currentMembers: Array<{ user_id: string; profiles?: any }>
   users: Array<{ id: string; name: string; email: string }>
   isOwner: boolean
+  isAdmin: boolean
   currentUserId: string
   onUpdate: () => void
   onClose: () => void
@@ -18,6 +19,7 @@ export function BoardMemberManager({
   currentMembers,
   users,
   isOwner,
+  isAdmin,
   currentUserId,
   onUpdate,
   onClose,
@@ -61,7 +63,7 @@ export function BoardMemberManager({
         {users.map((user) => {
           const isAssigned = currentMembers.some(m => m.user_id === user.id)
           const isCurrentUser = user.id === currentUserId
-          const canToggle = isOwner && !isCurrentUser
+          const canToggle = (isOwner || isAdmin) && !isCurrentUser
 
           return (
             <div
