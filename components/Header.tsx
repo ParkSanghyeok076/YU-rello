@@ -21,7 +21,7 @@ export function Header({ userEmail, userName, userId }: HeaderProps) {
   }
 
   return (
-    <header className="bg-navy border-b border-navy-light px-6 py-4">
+    <header className="bg-black border-b border-gray-800 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
           <h1 className="text-2xl font-[family-name:var(--font-logo)] font-bold">YU-rello</h1>
