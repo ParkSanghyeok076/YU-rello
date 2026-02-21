@@ -33,6 +33,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
     .from('lists')
     .select(`
       *,
+      list_members (user_id, profiles (*)),
       cards (
         *,
         card_labels (

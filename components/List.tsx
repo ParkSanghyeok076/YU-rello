@@ -15,9 +15,10 @@ type ListProps = {
   onUpdate: () => void
   currentUserId?: string
   currentUserName?: string
+  users: Array<{ id: string; name: string; email: string }>
 }
 
-export function List({ list, onUpdate, currentUserId, currentUserName }: ListProps) {
+export function List({ list, onUpdate, currentUserId, currentUserName, users }: ListProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
   const [listTitle, setListTitle] = useState(list.title)
@@ -157,6 +158,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
             <ListMemberPicker
               listId={list.id}
               currentMembers={list.list_members || []}
+              users={users}
               onUpdate={() => { setIsMemberPickerOpen(false); onUpdate() }}
               onClose={() => setIsMemberPickerOpen(false)}
             />

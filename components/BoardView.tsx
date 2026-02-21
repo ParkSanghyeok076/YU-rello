@@ -208,6 +208,7 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
                     onUpdate={handleRefresh}
                     currentUserId={currentUserId}
                     currentUserName={currentUserName}
+                    users={users}
                   />
                 ))}
 

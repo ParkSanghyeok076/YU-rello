@@ -1,34 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 type ListMemberPickerProps = {
   listId: string
   currentMembers: Array<{ user_id: string; profiles?: any }>
+  users: Array<{ id: string; name: string; email: string }>
   onUpdate: () => void
   onClose: () => void
 }
 
-export function ListMemberPicker({ listId, currentMembers, onUpdate, onClose }: ListMemberPickerProps) {
-  const [allUsers, setAllUsers] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
+export function ListMemberPicker({ listId, currentMembers, users, onUpdate, onClose }: ListMemberPickerProps) {
+  const [loadingUsers, setLoadingUsers] = useState<Set<string>>(new Set())
   const supabase = createClient()
-
-  useEffect(() => {
-    fetchUsers()
-  }, [])
-
-  const fetchUsers = async () => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, name, email')
-    setAllUsers(data || [])
-  }
 
   const handleToggleMember = async (userId: string) => {
     const isAssigned = currentMembers.some(m => m.user_id === userId)
-    setLoading(true)
+    setLoadingUsers(prev => new Set(prev).add(userId))
     try {
       if (isAssigned) {
         const { error } = await supabase
@@ -47,7 +36,7 @@ export function ListMemberPicker({ listId, currentMembers, onUpdate, onClose }: 
     } catch (error) {
       console.error('Error toggling list member:', error)
     } finally {
-      setLoading(false)
+      setLoadingUsers(prev => { const s = new Set(prev); s.delete(userId); return s })
     }
   }
 
@@ -59,13 +48,13 @@ export function ListMemberPicker({ listId, currentMembers, onUpdate, onClose }: 
       </div>
 
       <div className="space-y-2">
-        {allUsers.map((user) => {
+        {users.map((user) => {
           const isAssigned = currentMembers.some(m => m.user_id === user.id)
           return (
             <button
               key={user.id}
               onClick={() => handleToggleMember(user.id)}
-              disabled={loading}
+              disabled={loadingUsers.has(user.id)}
               className="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
               <div className="w-8 h-8 rounded-full bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
