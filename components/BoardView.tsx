@@ -47,6 +47,7 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
       .from('lists')
       .select(`
         *,
+        list_members (user_id, profiles (*)),
         cards (
           *,
           card_labels (label_id, labels (*)),
@@ -153,12 +154,24 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
   }
 
   const filteredLists = userFilter
-    ? lists.map(list => ({
-        ...list,
-        cards: list.cards.filter((card: any) =>
-          card.card_members.some((m: any) => m.user_id === userFilter)
-        ),
-      }))
+    ? lists
+        .filter((list: any) =>
+          list.list_members?.some((m: any) => m.user_id === userFilter) ||
+          list.cards.some((card: any) =>
+            card.card_members.some((m: any) => m.user_id === userFilter)
+          )
+        )
+        .map((list: any) => {
+          const isListMember = list.list_members?.some((m: any) => m.user_id === userFilter)
+          return {
+            ...list,
+            cards: isListMember
+              ? list.cards
+              : list.cards.filter((card: any) =>
+                  card.card_members.some((m: any) => m.user_id === userFilter)
+                ),
+          }
+        })
     : lists
 
   const listIds = lists.map(list => `list-${list.id}`)
