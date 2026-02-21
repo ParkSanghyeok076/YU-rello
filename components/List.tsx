@@ -23,6 +23,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
   const [listTitle, setListTitle] = useState(list.title)
   const [isMemberPickerOpen, setIsMemberPickerOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const pickerRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
   const { setNodeRef: setDroppableRef } = useDroppable({ id: list.id })
@@ -58,6 +59,18 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
     }
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isMenuOpen])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setIsMemberPickerOpen(false)
+      }
+    }
+    if (isMemberPickerOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isMemberPickerOpen])
 
   const handleRename = async () => {
     const trimmed = listTitle.trim()
@@ -117,7 +130,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
         </div>
 
         {/* 멤버 아바타 + 피커 */}
-        <div className="relative flex items-center gap-1 mx-2">
+        <div ref={pickerRef} className="relative flex items-center gap-1 mx-2">
           {(list.list_members || []).slice(0, 3).map((m: any) => (
             <div
               key={m.user_id}
@@ -133,7 +146,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
             </div>
           )}
           <button
-            onClick={() => setIsMemberPickerOpen(prev => !prev)}
+            onClick={() => { setIsMenuOpen(false); setIsMemberPickerOpen(prev => !prev) }}
             className="w-5 h-5 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center hover:bg-gray-500 transition-colors ml-1"
             title="멤버 관리"
           >
@@ -153,7 +166,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
         {/* ⋯ dropdown menu */}
         <div className="relative" ref={menuRef}>
           <button
-            onClick={() => setIsMenuOpen((prev) => !prev)}
+            onClick={() => { setIsMemberPickerOpen(false); setIsMenuOpen((prev) => !prev) }}
             className="text-gray-400 hover:text-gray-200 transition-colors px-1 ml-2"
           >
             ⋯
