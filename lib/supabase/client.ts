@@ -11,6 +11,21 @@ export type Database = {
           avatar_url: string | null
           created_at: string
         }
+        Insert: {
+          id: string
+          email: string
+          name: string
+          avatar_url?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          name?: string
+          avatar_url?: string | null
+          created_at?: string
+        }
+        Relationships: []
       }
       boards: {
         Row: {
@@ -20,6 +35,21 @@ export type Database = {
           created_at: string
           updated_at: string
         }
+        Insert: {
+          id?: string
+          title: string
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       lists: {
         Row: {
@@ -29,6 +59,21 @@ export type Database = {
           position: number
           created_at: string
         }
+        Insert: {
+          id?: string
+          board_id: string
+          title: string
+          position: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          board_id?: string
+          title?: string
+          position?: number
+          created_at?: string
+        }
+        Relationships: []
       }
       cards: {
         Row: {
@@ -41,6 +86,27 @@ export type Database = {
           created_at: string
           updated_at: string
         }
+        Insert: {
+          id?: string
+          list_id: string
+          title: string
+          description?: string | null
+          due_date?: string | null
+          position: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          list_id?: string
+          title?: string
+          description?: string | null
+          due_date?: string | null
+          position?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       checklist_items: {
         Row: {
@@ -52,6 +118,25 @@ export type Database = {
           position: number
           created_at: string
         }
+        Insert: {
+          id?: string
+          card_id: string
+          title: string
+          due_date?: string | null
+          completed?: boolean
+          position: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          card_id?: string
+          title?: string
+          due_date?: string | null
+          completed?: boolean
+          position?: number
+          created_at?: string
+        }
+        Relationships: []
       }
       labels: {
         Row: {
@@ -60,18 +145,49 @@ export type Database = {
           name: string
           color: string
         }
+        Insert: {
+          id?: string
+          board_id: string
+          name: string
+          color: string
+        }
+        Update: {
+          id?: string
+          board_id?: string
+          name?: string
+          color?: string
+        }
+        Relationships: []
       }
       card_labels: {
         Row: {
           card_id: string
           label_id: string
         }
+        Insert: {
+          card_id: string
+          label_id: string
+        }
+        Update: {
+          card_id?: string
+          label_id?: string
+        }
+        Relationships: []
       }
       card_members: {
         Row: {
           card_id: string
           user_id: string
         }
+        Insert: {
+          card_id: string
+          user_id: string
+        }
+        Update: {
+          card_id?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       comments: {
         Row: {
@@ -81,6 +197,21 @@ export type Database = {
           content: string
           created_at: string
         }
+        Insert: {
+          id?: string
+          card_id: string
+          user_id?: string | null
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          card_id?: string
+          user_id?: string | null
+          content?: string
+          created_at?: string
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -92,8 +223,29 @@ export type Database = {
           read: boolean
           created_at: string
         }
+        Insert: {
+          id?: string
+          user_id: string
+          type: string
+          card_id: string
+          message: string
+          read?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: string
+          card_id?: string
+          message?: string
+          read?: boolean
+          created_at?: string
+        }
+        Relationships: []
       }
     }
+    Views: Record<string, never>
+    Functions: Record<string, never>
   }
 }
 

@@ -120,11 +120,30 @@ git config user.name "ParkSanghyeok076"
 
 ---
 
+## ⚠️ 새 PC 시작 전 필수 작업
+
+### `.env.local` 파일 생성 (매 PC마다 직접 생성 필요 - Git에 저장 안 됨)
+
+프로젝트 루트에 `.env.local` 파일을 만들고 아래 내용 입력:
+```
+NEXT_PUBLIC_SUPABASE_URL=https://mennynwvgkzmohoclrxs.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=(Supabase Dashboard → Settings → API → anon public 키)
+```
+
+**API 키 찾는 방법:**
+1. https://supabase.com/dashboard 접속
+2. 프로젝트 `mennynwvgkzmohoclrxs` 선택
+3. Settings → API → Project API keys → `anon public` 키 복사
+
+> 이 파일이 없으면 로컬호스트 실행 시 서버 에러 발생!
+
+---
+
 ## 📝 중요 사항
 
 ### Supabase 설정
 - **프로젝트 URL:** https://mennynwvgkzmohoclrxs.supabase.co
-- **환경 변수:** `.env.local` 파일에 설정됨
+- **환경 변수:** `.env.local` 파일에 설정됨 (Git 미포함 - 매 PC마다 생성 필요)
 - **인증:** 이메일 확인 필요 (회원가입 후 Supabase Dashboard에서 수동 확인 가능)
 
 ### 테스트 계정 만들기
