@@ -86,6 +86,12 @@ export function ChecklistSection({ cardId, items, onUpdate }: ChecklistSectionPr
             type="text"
             value={newItemTitle}
             onChange={(e) => setNewItemTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                handleAdd()
+              }
+            }}
             placeholder="항목 제목..."
             autoFocus
             className="px-2 py-1 border border-gray-300 rounded text-navy focus:outline-none focus:ring-2 focus:ring-navy"
