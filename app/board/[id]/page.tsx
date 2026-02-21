@@ -56,12 +56,23 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
     .from('profiles')
     .select('id, name, email') as { data: Pick<Profile, 'id' | 'name' | 'email'>[] | null; error: unknown }
 
+  // board_members fetch (멤버 목록 + 프로필)
+  const { data: boardMembers } = await supabase
+    .from('board_members')
+    .select('user_id, profiles(*)')
+    .eq('board_id', id) as { data: any[] | null; error: unknown }
+
+  // 현재 유저가 보드 owner인지 확인
+  const isOwner = board.created_by === session.user.id
+
   return (
     <BoardView
       board={board}
       initialLists={lists || []}
       users={users || []}
       currentUserId={session.user.id}
+      boardMembers={boardMembers || []}
+      isOwner={isOwner}
     />
   )
 }
