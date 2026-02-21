@@ -1,4 +1,7 @@
 import { createServerClient } from '@/lib/supabase/server'
+import { Database } from '@/lib/supabase/client'
+
+type Board = Database['public']['Tables']['boards']['Row']
 
 export default async function DashboardPage() {
   const supabase = await createServerClient()
@@ -6,7 +9,7 @@ export default async function DashboardPage() {
   const { data: boards } = await supabase
     .from('boards')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false }) as { data: Board[] | null; error: unknown }
 
   return (
     <div className="p-8">

@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { Database } from '@/lib/supabase/client'
+
+type Board = Database['public']['Tables']['boards']['Row']
 
 export function BoardForm() {
   const [title, setTitle] = useState('')
@@ -27,11 +30,11 @@ export function BoardForm() {
           created_by: user.id,
         })
         .select()
-        .single()
+        .single() as { data: Board | null; error: unknown }
 
       if (error) throw error
 
-      router.push(`/board/${data.id}`)
+      router.push(`/board/${(data as Board).id}`)
       router.refresh()
     } catch (error: any) {
       setError(error.message)
