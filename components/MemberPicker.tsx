@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { createNotification, sendBrowserNotification } from '@/lib/notifications'
 
 type MemberPickerProps = {
   cardId: string
+  cardTitle: string
   currentMembers: any[]
   onUpdate: () => void
   onClose: () => void
 }
 
-export function MemberPicker({ cardId, currentMembers, onUpdate, onClose }: MemberPickerProps) {
+export function MemberPicker({ cardId, cardTitle, currentMembers, onUpdate, onClose }: MemberPickerProps) {
   const [allUsers, setAllUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
@@ -46,6 +48,9 @@ export function MemberPicker({ cardId, currentMembers, onUpdate, onClose }: Memb
           .insert({ card_id: cardId, user_id: userId })
 
         if (error) throw error
+
+        await createNotification(userId, 'member_assigned', cardId, `"${cardTitle}" 카드에 멤버로 추가되었습니다`)
+        sendBrowserNotification('멤버 추가', `"${cardTitle}" 카드에 추가되었습니다`)
       }
 
       onUpdate()

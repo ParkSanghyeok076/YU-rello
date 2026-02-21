@@ -26,6 +26,7 @@ export default async function DashboardLayout({
       <Header
         userEmail={session.user.email!}
         userName={profile?.name || 'User'}
+        userId={session.user.id}
       />
       {children}
     </div>

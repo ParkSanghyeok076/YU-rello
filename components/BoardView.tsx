@@ -23,6 +23,7 @@ import { CreateListButton } from './CreateListButton'
 import { CalendarView } from './CalendarView'
 import { CardModal } from './CardModal'
 import { createClient } from '@/lib/supabase/client'
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription'
 
 type BoardViewProps = {
   board: any
@@ -42,6 +43,8 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
 
   // 현재 유저 이름 조회
   const currentUserName = users.find(u => u.id === currentUserId)?.name || 'User'
+
+  useRealtimeSubscription(board.id)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -118,7 +121,7 @@ export function BoardView({ board, initialLists, users, currentUserId }: BoardVi
       if (oldIndex !== newIndex) {
         const newCards = arrayMove(oldList.cards, oldIndex, newIndex)
         for (let i = 0; i < newCards.length; i++) {
-          await supabase.from('cards').update({ position: i }).eq('id', newCards[i].id)
+          await supabase.from('cards').update({ position: i }).eq('id', (newCards[i] as any).id)
         }
         handleRefresh()
       }

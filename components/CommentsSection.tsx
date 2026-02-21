@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { createNotification } from '@/lib/notifications'
 import { Comment } from './Comment'
 
 type CommentsSectionProps = {
   cardId: string
+  cardTitle: string
   comments: any[]
   currentUserId: string
   currentUserName: string
@@ -14,6 +16,7 @@ type CommentsSectionProps = {
 
 export function CommentsSection({
   cardId,
+  cardTitle,
   comments,
   currentUserId,
   currentUserName,
@@ -37,6 +40,25 @@ export function CommentsSection({
         })
 
       if (error) throw error
+
+      // 카드 멤버에게 댓글 알림 전송
+      const { data: members } = await supabase
+        .from('card_members')
+        .select('user_id')
+        .eq('card_id', cardId)
+
+      if (members) {
+        for (const member of members) {
+          if (member.user_id !== currentUserId) {
+            await createNotification(
+              member.user_id,
+              'comment_added',
+              cardId,
+              `${currentUserName}님이 "${cardTitle}" 카드에 댓글을 달았습니다`
+            )
+          }
+        }
+      }
 
       setNewComment('')
       onUpdate()

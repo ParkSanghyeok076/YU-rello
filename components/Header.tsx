@@ -2,13 +2,15 @@
 
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { NotificationBell } from './NotificationBell'
 
 type HeaderProps = {
   userEmail: string
   userName: string
+  userId: string
 }
 
-export function Header({ userEmail, userName }: HeaderProps) {
+export function Header({ userEmail, userName, userId }: HeaderProps) {
   const router = useRouter()
   const supabase = createClient()
 
@@ -23,11 +25,10 @@ export function Header({ userEmail, userName }: HeaderProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
           <h1 className="text-2xl font-[family-name:var(--font-logo)] font-bold">YU-rello</h1>
-          {/* Board selector will go here */}
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Notifications will go here */}
+          <NotificationBell userId={userId} />
           <div className="flex items-center gap-2">
             <span className="text-sm">{userName}</span>
             <button

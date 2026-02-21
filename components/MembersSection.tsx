@@ -5,11 +5,12 @@ import { MemberPicker } from './MemberPicker'
 
 type MembersSectionProps = {
   cardId: string
+  cardTitle: string
   members: any[]
   onUpdate: () => void
 }
 
-export function MembersSection({ cardId, members, onUpdate }: MembersSectionProps) {
+export function MembersSection({ cardId, cardTitle, members, onUpdate }: MembersSectionProps) {
   const [showPicker, setShowPicker] = useState(false)
 
   return (
@@ -41,6 +42,7 @@ export function MembersSection({ cardId, members, onUpdate }: MembersSectionProp
         {showPicker && (
           <MemberPicker
             cardId={cardId}
+            cardTitle={cardTitle}
             currentMembers={members}
             onUpdate={onUpdate}
             onClose={() => setShowPicker(false)}

@@ -98,11 +98,22 @@
 
 ---
 
-## 🚧 다음 작업 (Task 18부터)
+- ✅ **Task 18:** 알림 시스템
+  - `lib/notifications.ts` - `createNotification()`, `sendBrowserNotification()` 유틸
+  - `components/NotificationBell.tsx` - 알림 벨 (뱃지, 드롭다운, 읽음 처리)
+  - `components/Header.tsx` - NotificationBell 통합 (`userId` prop 추가)
+  - 멤버 추가 시 알림, 댓글 추가 시 카드 멤버에게 알림
 
-### Task 18: 알림 시스템
-### Task 19: 유저 필터링 (백엔드)
-### Task 20: 실시간 업데이트
+- ✅ **Task 19:** 실시간 업데이트
+  - `hooks/useRealtimeSubscription.ts` - 7개 테이블 Supabase Realtime 구독
+  - BoardView에 통합 (`useRealtimeSubscription(board.id)`)
+
+- ✅ **Task 20:** 최종 마무리
+  - PROGRESS.md 업데이트 완료
+
+---
+
+## ✅ 모든 작업 완료!
 
 ---
 

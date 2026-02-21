@@ -218,6 +218,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
           {/* Members */}
           <MembersSection
             cardId={cardId}
+            cardTitle={(card as any).title}
             members={(card as any).card_members || []}
             onUpdate={handleSectionUpdate}
           />
@@ -225,6 +226,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
           {/* Comments */}
           <CommentsSection
             cardId={cardId}
+            cardTitle={(card as any).title}
             comments={(card as any).comments || []}
             currentUserId={currentUserId}
             currentUserName={currentUserName}
