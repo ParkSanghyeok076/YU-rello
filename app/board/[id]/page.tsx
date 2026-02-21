@@ -27,7 +27,16 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
     redirect('/dashboard')
   }
 
-  // 명시적 멤버십 확인 (RLS 보완용 방어 코드)
+  // 현재 유저의 admin 여부 조회 (멤버십 체크 전에 필요)
+  const { data: currentProfile } = await supabase
+    .from('profiles')
+    .select('is_admin')
+    .eq('id', session.user.id)
+    .single() as { data: { is_admin: boolean } | null; error: unknown }
+
+  const isAdmin = currentProfile?.is_admin ?? false
+
+  // 명시적 멤버십 확인 (RLS 보완용 방어 코드) — admin은 멤버십 없이도 접근 가능
   const { data: membership } = await supabase
     .from('board_members')
     .select('user_id')
@@ -35,7 +44,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
     .eq('user_id', session.user.id)
     .maybeSingle()
 
-  if (!membership) {
+  if (!membership && !isAdmin) {
     redirect('/dashboard')
   }
 
@@ -85,6 +94,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
       currentUserId={session.user.id}
       boardMembers={boardMembers || []}
       isOwner={isOwner}
+      isAdmin={isAdmin}
     />
   )
 }

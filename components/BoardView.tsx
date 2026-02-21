@@ -32,9 +32,10 @@ type BoardViewProps = {
   currentUserId: string
   boardMembers: Array<{ user_id: string; profiles?: any }>
   isOwner: boolean
+  isAdmin: boolean
 }
 
-export function BoardView({ board, initialLists, users, currentUserId, boardMembers: initialBoardMembers, isOwner }: BoardViewProps) {
+export function BoardView({ board, initialLists, users, currentUserId, boardMembers: initialBoardMembers, isOwner, isAdmin }: BoardViewProps) {
   const [lists, setLists] = useState(initialLists)
   const [currentView, setCurrentView] = useState<'board' | 'calendar'>('board')
   const [userFilter, setUserFilter] = useState<string | null>(null)
@@ -226,7 +227,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
       </div>
 
       {/* 멤버 관리 버튼 (owner만) */}
-      {isOwner && (
+      {(isOwner || isAdmin) && (
         <div className="relative" ref={memberManagerRef}>
           <button
             onClick={() => setIsMemberManagerOpen(prev => !prev)}
