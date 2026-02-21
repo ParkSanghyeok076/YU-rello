@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { useDroppable } from '@dnd-kit/core'
 import { useSortable, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -36,22 +37,25 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
     .map((card: any) => card.id)
 
   return (
-    <div
+    <motion.div
       ref={setSortableRef}
       style={style}
-      className="flex-shrink-0 w-72 bg-white rounded-lg p-4 max-h-[calc(100vh-200px)] flex flex-col"
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: isDragging ? 0.5 : 1, x: 0 }}
+      transition={{ duration: 0.2 }}
+      className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3 max-h-[calc(100vh-160px)] flex flex-col"
     >
       <div
         {...attributes}
         {...listeners}
-        className="flex items-center justify-between mb-4 cursor-grab active:cursor-grabbing"
+        className="flex items-center justify-between mb-3 cursor-grab active:cursor-grabbing px-1"
       >
-        <h3 className="font-semibold text-navy">{list.title}</h3>
-        <button className="text-gray-500 hover:text-gray-700">⋯</button>
+        <h3 className="font-semibold text-white">{list.title}</h3>
+        <button className="text-gray-400 hover:text-gray-200 transition-colors">⋯</button>
       </div>
 
       <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
-        <div ref={setDroppableRef} className="flex-1 overflow-y-auto space-y-2 mb-2">
+        <div ref={setDroppableRef} className="flex-1 overflow-y-auto space-y-2 mb-2 pr-1">
           {list.cards
             .sort((a: any, b: any) => a.position - b.position)
             .map((card: any) => (
@@ -71,6 +75,6 @@ export function List({ list, onUpdate, currentUserId, currentUserName }: ListPro
         currentPosition={list.cards.length}
         onCardCreated={onUpdate}
       />
-    </div>
+    </motion.div>
   )
 }
