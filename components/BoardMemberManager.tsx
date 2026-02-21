@@ -90,7 +90,7 @@ export function BoardMemberManager({
               ) : (
                 isAssigned && (
                   <span className="text-xs text-gray-400">
-                    {isCurrentUser ? '나 (관리자)' : '멤버'}
+                    {isCurrentUser && isOwner ? '나 (관리자)' : '멤버'}
                   </span>
                 )
               )}
