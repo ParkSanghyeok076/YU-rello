@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   DndContext,
   DragOverlay,
@@ -42,6 +42,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   const [calendarCardId, setCalendarCardId] = useState<string | null>(null)
   const [isMemberManagerOpen, setIsMemberManagerOpen] = useState(false)
   const [boardMembers, setBoardMembers] = useState(initialBoardMembers)
+  const memberManagerRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
   // 현재 유저 이름 조회
@@ -70,6 +71,18 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
       .eq('board_id', board.id)
     if (members) setBoardMembers(members)
   }
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (memberManagerRef.current && !memberManagerRef.current.contains(e.target as Node)) {
+        setIsMemberManagerOpen(false)
+      }
+    }
+    if (isMemberManagerOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isMemberManagerOpen])
 
   useRealtimeSubscription(board.id, handleRefresh)
 
@@ -230,7 +243,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
 
               {/* 멤버 관리 버튼 (owner만) */}
               {isOwner && (
-                <div className="relative">
+                <div className="relative" ref={memberManagerRef}>
                   <button
                     onClick={() => setIsMemberManagerOpen(prev => !prev)}
                     className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
@@ -307,7 +320,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
 
             {/* 멤버 관리 버튼 (owner만) */}
             {isOwner && (
-              <div className="relative">
+              <div className="relative" ref={memberManagerRef}>
                 <button
                   onClick={() => setIsMemberManagerOpen(prev => !prev)}
                   className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
