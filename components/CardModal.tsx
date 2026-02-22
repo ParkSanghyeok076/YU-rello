@@ -22,6 +22,8 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
   const [description, setDescription] = useState('')
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [startDate, setStartDate] = useState('')
+  const [dueDate, setDueDate] = useState('')
   const supabase = createClient()
 
   useEffect(() => {
@@ -56,6 +58,8 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
     if (data) {
       setCard(data)
       setDescription((data as any).description || '')
+      setStartDate((data as any).start_date || '')
+      setDueDate((data as any).due_date ? (data as any).due_date.split('T')[0] : '')
     }
   }
 
@@ -78,6 +82,24 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleUpdateStartDate = async (value: string) => {
+    setStartDate(value)
+    await supabase
+      .from('cards')
+      .update({ start_date: value || null })
+      .eq('id', cardId)
+    onUpdate()
+  }
+
+  const handleUpdateDueDate = async (value: string) => {
+    setDueDate(value)
+    await supabase
+      .from('cards')
+      .update({ due_date: value || null })
+      .eq('id', cardId)
+    onUpdate()
   }
 
   const handleDeleteCard = async () => {
@@ -205,6 +227,49 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                 )}
               </div>
             )}
+          </div>
+
+          {/* Dates */}
+          <div>
+            <h3 className="text-lg font-semibold text-navy mb-3">📅 날짜</h3>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <label className="text-sm text-gray-600 w-14 shrink-0">시작일</label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => handleUpdateStartDate(e.target.value)}
+                  className="px-3 py-1.5 border border-gray-300 rounded text-navy text-sm focus:outline-none focus:ring-2 focus:ring-navy"
+                />
+                {startDate && (
+                  <button
+                    onClick={() => handleUpdateStartDate('')}
+                    className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+                    title="시작일 삭제"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-3">
+                <label className="text-sm text-gray-600 w-14 shrink-0">종료일</label>
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => handleUpdateDueDate(e.target.value)}
+                  className="px-3 py-1.5 border border-gray-300 rounded text-navy text-sm focus:outline-none focus:ring-2 focus:ring-navy"
+                />
+                {dueDate && (
+                  <button
+                    onClick={() => handleUpdateDueDate('')}
+                    className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+                    title="종료일 삭제"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Checklist */}
