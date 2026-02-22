@@ -255,6 +255,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   return (
     <div className="min-h-screen bg-dark-bg">
       <Toolbar
+        boardId={board.id}
         onViewChange={setCurrentView}
         onUserFilterChange={setUserFilter}
         users={users}
