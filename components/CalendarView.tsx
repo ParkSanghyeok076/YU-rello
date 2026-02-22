@@ -25,22 +25,24 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
     lists.forEach((list) => {
       list.cards.forEach((card: any) => {
         // 체크리스트 아이템 마감일
-        card.checklist_items?.forEach((item: any) => {
-          if (item.due_date) {
-            calendarEvents.push({
-              id: item.id,
-              title: `${item.completed ? '✓ ' : ''}${item.title}`,
-              date: item.due_date.split('T')[0],
-              backgroundColor: item.completed ? '#22c55e' : '#1a2b4a',
-              borderColor: item.completed ? '#16a34a' : '#0a1b3a',
-              extendedProps: {
-                cardId: card.id,
-                cardTitle: card.title,
-                listTitle: list.title,
-                completed: item.completed,
-              },
-            })
-          }
+        card.checklists?.forEach((cl: any) => {
+          cl.checklist_items?.forEach((item: any) => {
+            if (item.due_date) {
+              calendarEvents.push({
+                id: item.id,
+                title: `${item.completed ? '✓ ' : ''}${item.title}`,
+                date: item.due_date.split('T')[0],
+                backgroundColor: item.completed ? '#22c55e' : '#1a2b4a',
+                borderColor: item.completed ? '#16a34a' : '#0a1b3a',
+                extendedProps: {
+                  cardId: card.id,
+                  cardTitle: card.title,
+                  listTitle: list.title,
+                  completed: item.completed,
+                },
+              })
+            }
+          })
         })
 
         // 카드 날짜 이벤트 (start_date 또는 due_date가 있을 때)

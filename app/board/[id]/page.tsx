@@ -65,7 +65,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
           user_id,
           profiles (*)
         ),
-        checklist_items (*),
+        checklists (*, checklist_items (*)),
         comments (*)
       )
     `)
