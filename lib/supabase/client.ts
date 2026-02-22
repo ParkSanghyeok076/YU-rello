@@ -84,6 +84,7 @@ export type Database = {
           list_id: string
           title: string
           description: string | null
+          start_date: string | null
           due_date: string | null
           position: number
           created_at: string
@@ -94,6 +95,7 @@ export type Database = {
           list_id: string
           title: string
           description?: string | null
+          start_date?: string | null
           due_date?: string | null
           position: number
           created_at?: string
@@ -104,6 +106,7 @@ export type Database = {
           list_id?: string
           title?: string
           description?: string | null
+          start_date?: string | null
           due_date?: string | null
           position?: number
           created_at?: string
