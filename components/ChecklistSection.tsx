@@ -5,34 +5,55 @@ import { createClient } from '@/lib/supabase/client'
 import { ChecklistItem } from './ChecklistItem'
 
 type ChecklistSectionProps = {
-  cardId: string
+  checklist: { id: string; title: string }
   items: any[]
   onUpdate: () => void
+  onDelete: () => void
 }
 
-export function ChecklistSection({ cardId, items, onUpdate }: ChecklistSectionProps) {
+export function ChecklistSection({ checklist, items, onUpdate, onDelete }: ChecklistSectionProps) {
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [titleValue, setTitleValue] = useState(checklist.title)
   const [isAdding, setIsAdding] = useState(false)
   const [newItemTitle, setNewItemTitle] = useState('')
   const [newItemDueDate, setNewItemDueDate] = useState('')
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
 
+  const handleSaveTitle = async () => {
+    const trimmed = titleValue.trim()
+    if (!trimmed) {
+      setTitleValue(checklist.title)
+      setIsEditingTitle(false)
+      return
+    }
+    await supabase
+      .from('checklists')
+      .update({ title: trimmed })
+      .eq('id', checklist.id)
+    setIsEditingTitle(false)
+    onUpdate()
+  }
+
+  const handleDelete = async () => {
+    if (!confirm(`"${checklist.title}" 체크리스트를 삭제하시겠습니까?`)) return
+    await supabase.from('checklists').delete().eq('id', checklist.id)
+    onDelete()
+  }
+
   const handleAdd = async () => {
     if (!newItemTitle.trim()) return
-
     setLoading(true)
     try {
       const { error } = await supabase
         .from('checklist_items')
         .insert({
-          card_id: cardId,
+          checklist_id: checklist.id,
           title: newItemTitle.trim(),
           due_date: newItemDueDate || null,
           position: items.length,
         })
-
       if (error) throw error
-
       setNewItemTitle('')
       setNewItemDueDate('')
       setIsAdding(false)
@@ -45,33 +66,62 @@ export function ChecklistSection({ cardId, items, onUpdate }: ChecklistSectionPr
     }
   }
 
-  const completedCount = items.filter(item => item.completed).length
+  const completedCount = items.filter((item) => item.completed).length
   const totalCount = items.length
   const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
 
   return (
-    <div>
-      <h3 className="text-lg font-semibold text-navy mb-2 flex items-center gap-2">
-        ✓ 체크리스트
-        {totalCount > 0 && (
-          <span className="text-sm font-normal text-gray-600">
-            {completedCount}/{totalCount}
-          </span>
+    <div className="mb-6">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-navy">☑</span>
+        {isEditingTitle ? (
+          <input
+            type="text"
+            value={titleValue}
+            onChange={(e) => setTitleValue(e.target.value)}
+            onBlur={handleSaveTitle}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveTitle()
+              if (e.key === 'Escape') {
+                setTitleValue(checklist.title)
+                setIsEditingTitle(false)
+              }
+            }}
+            autoFocus
+            className="text-lg font-semibold text-navy border-b border-navy focus:outline-none bg-transparent flex-1"
+          />
+        ) : (
+          <h3
+            className="text-lg font-semibold text-navy cursor-pointer hover:underline flex-1"
+            onClick={() => setIsEditingTitle(true)}
+          >
+            {checklist.title}
+          </h3>
         )}
-      </h3>
+        <button
+          onClick={handleDelete}
+          className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-red-50 hover:text-red-600 text-gray-600"
+        >
+          Delete
+        </button>
+      </div>
 
       {/* Progress bar */}
       {totalCount > 0 && (
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-          <div
-            className="bg-navy h-2 rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xs text-gray-500 w-8">{Math.round(progress)}%</span>
+          <div className="flex-1 bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-navy h-2 rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
       )}
 
       {/* Items */}
-      <div className="space-y-1 mb-3">
+      <div className="space-y-1 mb-2">
         {items
           .sort((a, b) => a.position - b.position)
           .map((item) => (
@@ -125,9 +175,9 @@ export function ChecklistSection({ cardId, items, onUpdate }: ChecklistSectionPr
       ) : (
         <button
           onClick={() => setIsAdding(true)}
-          className="w-full text-left px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+          className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 text-gray-600"
         >
-          + 항목 추가
+          Add an item
         </button>
       )}
     </div>

@@ -114,10 +114,34 @@ export type Database = {
         }
         Relationships: []
       }
-      checklist_items: {
+      checklists: {
         Row: {
           id: string
           card_id: string
+          title: string
+          position: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          card_id: string
+          title: string
+          position?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          card_id?: string
+          title?: string
+          position?: number
+          created_at?: string
+        }
+        Relationships: []
+      }
+      checklist_items: {
+        Row: {
+          id: string
+          checklist_id: string
           title: string
           due_date: string | null
           completed: boolean
@@ -126,7 +150,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          card_id: string
+          checklist_id: string
           title: string
           due_date?: string | null
           completed?: boolean
@@ -135,7 +159,7 @@ export type Database = {
         }
         Update: {
           id?: string
-          card_id?: string
+          checklist_id?: string
           title?: string
           due_date?: string | null
           completed?: boolean

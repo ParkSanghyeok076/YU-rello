@@ -46,7 +46,10 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
           user_id,
           profiles (*)
         ),
-        checklist_items (*),
+        checklists (
+          *,
+          checklist_items (*)
+        ),
         comments (
           *,
           profiles (*)
@@ -274,12 +277,16 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
             </div>
           </div>
 
-          {/* Checklist */}
-          <ChecklistSection
-            cardId={cardId}
-            items={(card as any).checklist_items || []}
-            onUpdate={handleSectionUpdate}
-          />
+          {/* Checklists */}
+          {((card as any).checklists || []).map((cl: any) => (
+            <ChecklistSection
+              key={cl.id}
+              checklist={{ id: cl.id, title: cl.title }}
+              items={cl.checklist_items || []}
+              onUpdate={handleSectionUpdate}
+              onDelete={handleSectionUpdate}
+            />
+          ))}
 
           {/* Labels */}
           <LabelsSection
