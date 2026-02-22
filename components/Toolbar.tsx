@@ -71,10 +71,12 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
       const today = new Date().toISOString().split('T')[0]
 
       // Step 1: get all card IDs in this board
-      const { data: listData } = await supabase
+      const { data: listData, error: listError } = await supabase
         .from('lists')
         .select('cards(id)')
         .eq('board_id', boardId)
+
+      if (listError) throw listError
 
       const cardIds = (listData ?? []).flatMap((l: any) =>
         ((l.cards ?? []) as Array<{ id: string }>).map((c) => c.id)
