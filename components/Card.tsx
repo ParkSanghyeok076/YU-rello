@@ -13,6 +13,19 @@ type CardProps = {
   currentUserName?: string
 }
 
+function fmtDate(iso: string): string {
+  // iso can be YYYY-MM-DD (start_date) or YYYY-MM-DDTHH:MM:SS (due_date)
+  const d = new Date(iso.split('T')[0] + 'T00:00:00')
+  return d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
+}
+
+function formatCardDates(start_date: string | null, due_date: string | null): string | null {
+  if (start_date && due_date) return `${fmtDate(start_date)} ~ ${fmtDate(due_date)}`
+  if (start_date) return fmtDate(start_date)
+  if (due_date) return fmtDate(due_date)
+  return null
+}
+
 export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'User' }: CardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -89,9 +102,9 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
               💬 {card.comments.length}
             </span>
           )}
-          {card.due_date && (
+          {formatCardDates(card.start_date, card.due_date) && (
             <span className="flex items-center gap-1 text-xs text-gray-500">
-              📅 {new Date(card.due_date).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}
+              📅 {formatCardDates(card.start_date, card.due_date)}
             </span>
           )}
         </div>
