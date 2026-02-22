@@ -59,7 +59,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
           *,
           card_labels (label_id, labels (*)),
           card_members (user_id, profiles (*)),
-          checklist_items (*),
+          checklists (*, checklist_items (*)),
           comments (*)
         )
       `)

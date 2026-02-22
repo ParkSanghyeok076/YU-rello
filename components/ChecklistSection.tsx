@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ChecklistItem } from './ChecklistItem'
 
@@ -19,26 +19,46 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
   const [newItemDueDate, setNewItemDueDate] = useState('')
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
+  const isSavingTitle = useRef(false)
 
   const handleSaveTitle = async () => {
+    if (isSavingTitle.current) return
+    isSavingTitle.current = true
     const trimmed = titleValue.trim()
     if (!trimmed) {
       setTitleValue(checklist.title)
       setIsEditingTitle(false)
+      isSavingTitle.current = false
       return
     }
-    await supabase
-      .from('checklists')
-      .update({ title: trimmed })
-      .eq('id', checklist.id)
-    setIsEditingTitle(false)
-    onUpdate()
+    try {
+      const { error } = await supabase
+        .from('checklists')
+        .update({ title: trimmed })
+        .eq('id', checklist.id)
+      if (error) throw error
+      setIsEditingTitle(false)
+      onUpdate()
+    } catch (error) {
+      console.error('Error updating checklist title:', error)
+      setTitleValue(checklist.title)
+      setIsEditingTitle(false)
+      alert('제목 변경 실패')
+    } finally {
+      isSavingTitle.current = false
+    }
   }
 
   const handleDelete = async () => {
     if (!confirm(`"${checklist.title}" 체크리스트를 삭제하시겠습니까?`)) return
-    await supabase.from('checklists').delete().eq('id', checklist.id)
-    onDelete()
+    try {
+      const { error } = await supabase.from('checklists').delete().eq('id', checklist.id)
+      if (error) throw error
+      onDelete()
+    } catch (error) {
+      console.error('Error deleting checklist:', error)
+      alert('체크리스트 삭제 실패')
+    }
   }
 
   const handleAdd = async () => {
