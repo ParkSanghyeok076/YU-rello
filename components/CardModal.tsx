@@ -58,7 +58,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
     if (data) {
       setCard(data)
       setDescription((data as any).description || '')
-      setStartDate((data as any).start_date || '')
+      setStartDate((data as any).start_date ? (data as any).start_date.split('T')[0] : '')
       setDueDate((data as any).due_date ? (data as any).due_date.split('T')[0] : '')
     }
   }
