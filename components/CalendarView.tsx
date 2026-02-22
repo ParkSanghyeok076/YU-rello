@@ -10,6 +10,12 @@ type CalendarViewProps = {
   onCardClick: (cardId: string) => void
 }
 
+function addOneDay(dateStr: string): string {
+  const d = new Date(dateStr.split('T')[0] + 'T00:00:00')
+  d.setDate(d.getDate() + 1)
+  return d.toISOString().split('T')[0]
+}
+
 export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
   const [events, setEvents] = useState<any[]>([])
 
@@ -37,12 +43,17 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
           }
         })
 
-        // 카드 마감일
-        if (card.due_date) {
+        // 카드 날짜 이벤트 (start_date 또는 due_date가 있을 때)
+        const cardStart = card.start_date || (card.due_date ? card.due_date.split('T')[0] : null)
+        const cardEnd = card.due_date ? card.due_date.split('T')[0] : card.start_date
+
+        if (cardStart) {
           calendarEvents.push({
             id: `card-${card.id}`,
             title: `📋 ${card.title}`,
-            date: card.due_date.split('T')[0],
+            start: cardStart,
+            end: addOneDay(cardEnd!),
+            allDay: true,
             backgroundColor: '#6366f1',
             borderColor: '#4f46e5',
             extendedProps: {
