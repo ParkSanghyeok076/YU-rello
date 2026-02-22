@@ -278,7 +278,9 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
           </div>
 
           {/* Checklists */}
-          {((card as any).checklists || []).map((cl: any) => (
+          {((card as any).checklists || [])
+            .sort((a: any, b: any) => a.position - b.position)
+            .map((cl: any) => (
             <ChecklistSection
               key={cl.id}
               checklist={{ id: cl.id, title: cl.title }}
@@ -287,6 +289,24 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
               onDelete={handleSectionUpdate}
             />
           ))}
+
+          {/* 체크리스트 추가 */}
+          <div>
+            <button
+              onClick={async () => {
+                const position = (card as any).checklists?.length ?? 0
+                await supabase.from('checklists').insert({
+                  card_id: cardId,
+                  title: '체크리스트',
+                  position,
+                })
+                handleSectionUpdate()
+              }}
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 text-gray-600"
+            >
+              + 체크리스트 추가
+            </button>
+          </div>
 
           {/* Labels */}
           <LabelsSection
