@@ -69,6 +69,23 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
 
     try {
       const today = new Date().toISOString().split('T')[0]
+
+      // Step 1: get all card IDs in this board
+      const { data: listData } = await supabase
+        .from('lists')
+        .select('cards(id)')
+        .eq('board_id', boardId)
+
+      const cardIds = (listData ?? []).flatMap((l: any) =>
+        ((l.cards ?? []) as Array<{ id: string }>).map((c) => c.id)
+      )
+
+      if (cardIds.length === 0) {
+        setUpcomingTasks([])
+        return
+      }
+
+      // Step 2: fetch upcoming checklist items scoped to those cards
       const { data, error } = await supabase
         .from('checklist_items')
         .select(`
@@ -84,6 +101,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
         .eq('completed', false)
         .gte('due_date', today)
         .not('due_date', 'is', null)
+        .in('card_id', cardIds)
         .order('due_date', { ascending: true })
         .limit(5)
 
