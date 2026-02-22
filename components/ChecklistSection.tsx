@@ -122,7 +122,7 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
 
       {/* Items */}
       <div className="space-y-1 mb-2">
-        {items
+        {[...items]
           .sort((a, b) => a.position - b.position)
           .map((item) => (
             <ChecklistItem key={item.id} item={item} onUpdate={onUpdate} />
