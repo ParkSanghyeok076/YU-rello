@@ -103,7 +103,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: isDragging ? 0.5 : 1, x: 0 }}
       transition={{ duration: 0.2 }}
-      className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3 max-h-[calc(100vh-160px)] flex flex-col"
+      className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3 h-[calc(100vh-160px)] flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3 px-1">
