@@ -95,6 +95,7 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
         .fc-event:hover { opacity: 0.8; }
         .fc .fc-daygrid-day-number { color: #1a2b4a; }
         .fc .fc-col-header-cell-cushion { color: #1a2b4a; font-weight: 600; }
+        .fc .fc-toolbar-title { color: #1a2b4a; font-size: 1.5rem; font-weight: 700; }
       `}</style>
 
       <FullCalendar
