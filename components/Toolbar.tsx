@@ -69,6 +69,8 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
 
     try {
       const today = new Date().toISOString().split('T')[0]
+      console.log('🔍 [알림 디버그] boardId:', boardId)
+      console.log('🔍 [알림 디버그] today:', today)
 
       // Step 1: get all card IDs in this board
       const { data: listData, error: listError } = await supabase
@@ -76,13 +78,20 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
         .select('cards(id)')
         .eq('board_id', boardId)
 
+      console.log('🔍 [알림 디버그] Step 1 - listData:', listData)
+      console.log('🔍 [알림 디버그] Step 1 - listError:', listError)
+
       if (listError) throw listError
 
       const cardIds = (listData ?? []).flatMap((l: any) =>
         ((l.cards ?? []) as Array<{ id: string }>).map((c) => c.id)
       )
 
+      console.log('🔍 [알림 디버그] Step 1 - cardIds:', cardIds)
+      console.log('🔍 [알림 디버그] Step 1 - cardIds.length:', cardIds.length)
+
       if (cardIds.length === 0) {
+        console.log('⚠️ [알림 디버그] cardIds가 비어있음 - 알림 없음으로 표시')
         setUpcomingTasks([])
         return
       }
@@ -92,25 +101,45 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
         .from('checklist_items')
         .select(`
           id, title, due_date, completed,
-          cards (
-            id, title,
-            card_members (
-              user_id,
-              profiles ( id, name )
+          checklists (
+            card_id,
+            cards (
+              id, title,
+              card_members (
+                user_id,
+                profiles ( id, name )
+              )
             )
           )
         `)
         .eq('completed', false)
         .gte('due_date', today)
         .not('due_date', 'is', null)
-        .in('card_id', cardIds)
         .order('due_date', { ascending: true })
-        .limit(5)
+        .limit(100)
+
+      console.log('🔍 [알림 디버그] Step 2 - data:', data)
+      console.log('🔍 [알림 디버그] Step 2 - error:', error)
+      console.log('🔍 [알림 디버그] Step 2 - data?.length:', data?.length)
 
       if (error) throw error
-      setUpcomingTasks((data as unknown as UpcomingTask[]) || [])
+
+      // Filter by cardIds and map to expected format
+      const filteredTasks = (data || [])
+        .filter((item: any) => {
+          const cardId = item.checklists?.cards?.id
+          return cardId && cardIds.includes(cardId)
+        })
+        .map((item: any) => ({
+          ...item,
+          cards: item.checklists?.cards || null
+        }))
+        .slice(0, 5)
+
+      console.log('🔍 [알림 디버그] Step 2 - filteredTasks:', filteredTasks)
+      setUpcomingTasks(filteredTasks as UpcomingTask[])
     } catch (err) {
-      console.error('Error fetching upcoming tasks:', err)
+      console.error('❌ [알림 디버그] Error fetching upcoming tasks:', err)
       setUpcomingTasks([])
     } finally {
       setAlarmLoading(false)
