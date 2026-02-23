@@ -43,8 +43,9 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
     transition,
   }
 
-  const completedItems = card.checklist_items?.filter((item: any) => item.completed).length || 0
-  const totalItems = card.checklist_items?.length || 0
+  const allItems = card.checklists?.flatMap((cl: any) => cl.checklist_items || []) || []
+  const completedItems = allItems.filter((item: any) => item.completed).length
+  const totalItems = allItems.length
   const hasComments = card.comments?.length > 0
 
   return (
