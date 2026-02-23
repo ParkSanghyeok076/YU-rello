@@ -24,6 +24,8 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
   const [loading, setLoading] = useState(false)
   const [startDate, setStartDate] = useState('')
   const [dueDate, setDueDate] = useState('')
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [cardTitle, setCardTitle] = useState('')
   const supabase = createClient()
 
   useEffect(() => {
@@ -63,6 +65,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
       setDescription((data as any).description || '')
       setStartDate((data as any).start_date ? (data as any).start_date.split('T')[0] : '')
       setDueDate((data as any).due_date ? (data as any).due_date.split('T')[0] : '')
+      setCardTitle((data as any).title || '')
     }
   }
 
@@ -103,6 +106,24 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
       .update({ due_date: value || null })
       .eq('id', cardId)
     onUpdate()
+  }
+
+  const handleUpdateTitle = async () => {
+    const trimmed = cardTitle.trim()
+    if (!trimmed || trimmed === (card as any).title) {
+      setCardTitle((card as any).title)
+      setIsEditingTitle(false)
+      return
+    }
+    const { error } = await supabase
+      .from('cards')
+      .update({ title: trimmed })
+      .eq('id', cardId)
+    if (!error) {
+      setIsEditingTitle(false)
+      fetchCard()
+      onUpdate()
+    }
   }
 
   const handleDeleteCard = async () => {
@@ -170,7 +191,28 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                 </div>
               )}
 
-              <h2 className="text-2xl font-bold text-navy">{(card as any).title}</h2>
+              {isEditingTitle ? (
+                <input
+                  type="text"
+                  value={cardTitle}
+                  onChange={(e) => setCardTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleUpdateTitle()
+                    if (e.key === 'Escape') { setCardTitle((card as any).title); setIsEditingTitle(false) }
+                  }}
+                  onBlur={handleUpdateTitle}
+                  autoFocus
+                  className="text-2xl font-bold text-navy w-full border-b-2 border-navy focus:outline-none bg-transparent"
+                />
+              ) : (
+                <h2
+                  className="text-2xl font-bold text-navy cursor-pointer hover:bg-gray-100 rounded px-1 -mx-1 transition-colors"
+                  onClick={() => setIsEditingTitle(true)}
+                  title="클릭하여 제목 변경"
+                >
+                  {(card as any).title}
+                </h2>
+              )}
               <p className="text-sm text-gray-600 mt-1">
                 in list <span className="font-medium">{(card as any).lists?.title}</span>
               </p>
