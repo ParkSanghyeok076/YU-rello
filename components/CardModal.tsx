@@ -209,7 +209,10 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                   value={cardTitle}
                   onChange={(e) => setCardTitle(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleUpdateTitle()
+                    if (e.key === 'Enter') {
+                      cancelledRef.current = true
+                      handleUpdateTitle()
+                    }
                     if (e.key === 'Escape') {
                       cancelledRef.current = true
                       setCardTitle((card as any).title)
