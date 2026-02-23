@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { ChecklistSection } from './ChecklistSection'
@@ -26,10 +26,13 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
   const [dueDate, setDueDate] = useState('')
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [cardTitle, setCardTitle] = useState('')
+  const cancelledRef = useRef(false)
   const supabase = createClient()
 
+  // Issue 2 fix: reset isEditingTitle when modal opens for a new card
   useEffect(() => {
     if (isOpen && cardId) {
+      setIsEditingTitle(false)
       fetchCard()
     }
   }, [isOpen, cardId])
@@ -108,6 +111,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
     onUpdate()
   }
 
+  // Issues 3 & 4 fix: loading guard + error handling
   const handleUpdateTitle = async () => {
     const trimmed = cardTitle.trim()
     if (!trimmed || trimmed === (card as any).title) {
@@ -115,14 +119,22 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
       setIsEditingTitle(false)
       return
     }
-    const { error } = await supabase
-      .from('cards')
-      .update({ title: trimmed })
-      .eq('id', cardId)
-    if (!error) {
+    setLoading(true)
+    try {
+      const { error } = await supabase
+        .from('cards')
+        .update({ title: trimmed })
+        .eq('id', cardId)
+      if (error) {
+        console.error('Error updating title:', error)
+        alert('제목 업데이트 실패')
+        return
+      }
       setIsEditingTitle(false)
       fetchCard()
       onUpdate()
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -198,9 +210,17 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                   onChange={(e) => setCardTitle(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleUpdateTitle()
-                    if (e.key === 'Escape') { setCardTitle((card as any).title); setIsEditingTitle(false) }
+                    if (e.key === 'Escape') {
+                      cancelledRef.current = true
+                      setCardTitle((card as any).title)
+                      setIsEditingTitle(false)
+                    }
                   }}
-                  onBlur={handleUpdateTitle}
+                  onBlur={() => {
+                    if (cancelledRef.current) { cancelledRef.current = false; return }
+                    handleUpdateTitle()
+                  }}
+                  disabled={loading}
                   autoFocus
                   className="text-2xl font-bold text-navy w-full border-b-2 border-navy focus:outline-none bg-transparent"
                 />
