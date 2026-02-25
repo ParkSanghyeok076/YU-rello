@@ -296,12 +296,14 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
           </DragOverlay>
         </DndContext>
       ) : (
-        <div className="p-6">
+        <div className="p-6 pb-0 flex flex-col" style={{ height: 'calc(100vh - 50px)' }}>
           {boardHeaderUI}
-          <CalendarView
-            lists={filteredLists}
-            onCardClick={(cardId) => setCalendarCardId(cardId)}
-          />
+          <div className="flex-1 min-h-0">
+            <CalendarView
+              lists={filteredLists}
+              onCardClick={(cardId) => setCalendarCardId(cardId)}
+            />
+          </div>
         </div>
       )}
 
