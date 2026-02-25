@@ -7,6 +7,7 @@ import { ChecklistSection } from './ChecklistSection'
 import { LabelsSection } from './LabelsSection'
 import { MembersSection } from './MembersSection'
 import { CommentsSection } from './CommentsSection'
+import { CopyCardModal } from './CopyCardModal'
 
 type CardModalProps = {
   cardId: string
@@ -22,6 +23,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
   const [description, setDescription] = useState('')
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false)
   const [startDate, setStartDate] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -401,7 +403,14 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200">
+        <div className="p-6 border-t border-gray-200 flex items-center gap-3">
+          <button
+            onClick={() => setIsCopyModalOpen(true)}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+          >
+            📋 카드 복사
+          </button>
           <button
             onClick={handleDeleteCard}
             disabled={loading}
@@ -411,6 +420,16 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
           </button>
         </div>
       </motion.div>
+      <CopyCardModal
+        sourceCardId={cardId}
+        isOpen={isCopyModalOpen}
+        onClose={() => setIsCopyModalOpen(false)}
+        onSuccess={() => {
+          setIsCopyModalOpen(false)
+          fetchCard()
+          onUpdate()
+        }}
+      />
     </motion.div>
   )
 }
