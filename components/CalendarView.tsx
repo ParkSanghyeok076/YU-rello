@@ -79,7 +79,7 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg p-6">
+    <div className="bg-white rounded-lg p-4 h-full">
       <style>{`
         .fc {
           --fc-border-color: #e5e7eb;
@@ -108,7 +108,8 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
           center: 'title',
           right: 'dayGridMonth,dayGridWeek',
         }}
-        height="auto"
+        fixedWeekCount={false}
+        height="100%"
         locale="ko"
       />
     </div>
