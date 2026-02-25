@@ -103,7 +103,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: isDragging ? 0.5 : 1, x: 0 }}
       transition={{ duration: 0.2 }}
-      className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3 h-[calc(100vh-160px)] flex flex-col"
+      className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3 flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3 px-1">
@@ -195,7 +195,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
 
       {/* Cards */}
       <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
-        <div ref={setDroppableRef} className="flex-1 overflow-y-auto space-y-2 mb-2 pr-1">
+        <div ref={setDroppableRef} className="space-y-2 mb-2 pr-1">
           {list.cards
             .sort((a: any, b: any) => a.position - b.position)
             .map((card: any) => (
