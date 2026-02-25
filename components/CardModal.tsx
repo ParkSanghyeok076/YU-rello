@@ -8,6 +8,7 @@ import { LabelsSection } from './LabelsSection'
 import { MembersSection } from './MembersSection'
 import { CommentsSection } from './CommentsSection'
 import { CopyCardModal } from './CopyCardModal'
+import { AddChecklistPopover } from './AddChecklistPopover'
 
 type CardModalProps = {
   cardId: string
@@ -24,6 +25,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false)
+  const [isAddChecklistOpen, setIsAddChecklistOpen] = useState(false)
   const [startDate, setStartDate] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -358,21 +360,25 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
           ))}
 
           {/* 체크리스트 추가 */}
-          <div>
+          <div className="relative">
             <button
-              onClick={async () => {
-                const position = (card as any).checklists?.length ?? 0
-                await supabase.from('checklists').insert({
-                  card_id: cardId,
-                  title: '체크리스트',
-                  position,
-                })
-                handleSectionUpdate()
-              }}
+              onClick={() => setIsAddChecklistOpen((prev) => !prev)}
               className="px-3 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 text-gray-600"
             >
               + 체크리스트 추가
             </button>
+            {isAddChecklistOpen && (
+              <AddChecklistPopover
+                cardId={cardId}
+                boardId={boardId}
+                position={(card as any).checklists?.length ?? 0}
+                onClose={() => setIsAddChecklistOpen(false)}
+                onAdded={() => {
+                  setIsAddChecklistOpen(false)
+                  handleSectionUpdate()
+                }}
+              />
+            )}
           </div>
 
           {/* Labels */}
