@@ -158,33 +158,34 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
           </div>
         )}
 
-        {/* Right-click context menu */}
-        {contextMenu && (
-          <div
-            ref={contextMenuRef}
-            className="fixed bg-white border border-gray-200 rounded-lg shadow-xl z-[100] overflow-hidden py-1 min-w-[140px]"
-            style={{ left: contextMenu.x, top: contextMenu.y }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-              onClick={(e) => {
-                e.stopPropagation()
-                setContextMenu(null)
-                setIsCopyModalOpen(true)
-              }}
-            >
-              📋 카드 복사
-            </button>
-            <button
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-              onClick={handleDeleteCard}
-            >
-              🗑️ 카드 삭제
-            </button>
-          </div>
-        )}
       </motion.div>
+
+      {/* Right-click context menu — rendered OUTSIDE motion.div to avoid CSS transform positioning bug */}
+      {contextMenu && (
+        <div
+          ref={contextMenuRef}
+          className="fixed bg-white border border-gray-200 rounded-lg shadow-xl z-[100] overflow-hidden py-1 min-w-[140px]"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+            onClick={(e) => {
+              e.stopPropagation()
+              setContextMenu(null)
+              setIsCopyModalOpen(true)
+            }}
+          >
+            📋 카드 복사
+          </button>
+          <button
+            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+            onClick={handleDeleteCard}
+          >
+            🗑️ 카드 삭제
+          </button>
+        </div>
+      )}
 
       <CardModal
         cardId={card.id}

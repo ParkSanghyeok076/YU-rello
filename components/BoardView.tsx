@@ -253,50 +253,61 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   )
 
   return (
-    <div className="min-h-screen bg-dark-bg pb-[50px]">
+    <div className="h-screen flex flex-col bg-dark-bg">
+      {/* Toolbar at top */}
+      <Toolbar
+        boardId={board.id}
+        onViewChange={setCurrentView}
+        onUserFilterChange={setUserFilter}
+        users={users}
+      />
+
+      {/* Content area fills remaining height — horizontal scrollbar always at viewport bottom */}
       {currentView === 'board' ? (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onDragCancel={handleDragCancel}
-        >
-          <div className="p-6 overflow-x-auto">
-            {boardHeaderUI}
+        <div className="flex-1 overflow-x-auto overflow-y-auto">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
+          >
+            <div className="p-6">
+              {boardHeaderUI}
 
-            <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
-              <div className="flex gap-4 items-start">
-                {filteredLists.map((list) => (
-                  <List
-                    key={list.id}
-                    list={list}
-                    onUpdate={handleRefresh}
-                    currentUserId={currentUserId}
-                    currentUserName={currentUserName}
-                    users={users}
+              <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
+                <div className="flex gap-4 items-start">
+                  {filteredLists.map((list) => (
+                    <List
+                      key={list.id}
+                      list={list}
+                      onUpdate={handleRefresh}
+                      currentUserId={currentUserId}
+                      currentUserName={currentUserName}
+                      users={users}
+                    />
+                  ))}
+
+                  <CreateListButton
+                    boardId={board.id}
+                    currentPosition={lists.length}
+                    onListCreated={handleRefresh}
                   />
-                ))}
+                </div>
+              </SortableContext>
+            </div>
 
-                <CreateListButton
-                  boardId={board.id}
-                  currentPosition={lists.length}
-                  onListCreated={handleRefresh}
-                />
-              </div>
-            </SortableContext>
-          </div>
-
-          <DragOverlay>
-            {activeCard ? (
-              <div className="w-72 bg-white border-2 border-navy rounded-lg p-3 opacity-90 shadow-xl">
-                <p className="text-navy font-medium">{activeCard.title}</p>
-              </div>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
+            <DragOverlay>
+              {activeCard ? (
+                <div className="w-72 bg-white border-2 border-navy rounded-lg p-3 opacity-90 shadow-xl">
+                  <p className="text-navy font-medium">{activeCard.title}</p>
+                </div>
+              ) : null}
+            </DragOverlay>
+          </DndContext>
+        </div>
       ) : (
-        <div className="p-6 pb-0 flex flex-col" style={{ height: 'calc(100vh - 50px)' }}>
+        <div className="flex-1 overflow-y-auto flex flex-col p-6 pb-0">
           {boardHeaderUI}
           <div className="flex-1 min-h-0">
             <CalendarView
@@ -318,16 +329,6 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
           currentUserName={currentUserName}
         />
       )}
-
-      {/* Fixed bottom toolbar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40">
-        <Toolbar
-          boardId={board.id}
-          onViewChange={setCurrentView}
-          onUserFilterChange={setUserFilter}
-          users={users}
-        />
-      </div>
     </div>
   )
 }
