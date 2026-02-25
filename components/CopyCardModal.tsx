@@ -23,50 +23,50 @@ export function CopyCardModal({ sourceCardId, isOpen, onClose, onSuccess }: Copy
   const supabase = createClient()
 
   useEffect(() => {
-    if (isOpen && sourceCardId) {
-      fetchData()
-    }
-  }, [isOpen, sourceCardId])
+    if (!isOpen || !sourceCardId) return
 
-  const fetchData = async () => {
-    setFetching(true)
-    try {
-      const { data: cardData } = await supabase
-        .from('cards')
-        .select(`
-          *,
-          lists (id, board_id, title),
-          checklists (
+    const fetchData = async () => {
+      setFetching(true)
+      try {
+        const { data: cardData } = await supabase
+          .from('cards')
+          .select(`
             *,
-            checklist_items (*)
-          )
-        `)
-        .eq('id', sourceCardId)
-        .single()
+            lists (id, board_id, title),
+            checklists (
+              *,
+              checklist_items (*)
+            )
+          `)
+          .eq('id', sourceCardId)
+          .single()
 
-      if (!cardData) return
+        if (!cardData) return
 
-      setSourceCard(cardData)
-      setTitle(cardData.title)
+        setSourceCard(cardData)
+        setTitle((cardData as any).title)
 
-      const { data: listsData } = await supabase
-        .from('lists')
-        .select('id, title, cards(id)')
-        .eq('board_id', (cardData as any).lists.board_id)
-        .order('position', { ascending: true })
+        const { data: listsData } = await supabase
+          .from('lists')
+          .select('id, title, cards(id)')
+          .eq('board_id', (cardData as any).lists.board_id)
+          .order('position', { ascending: true })
 
-      if (listsData) {
-        setLists(listsData)
-        setSelectedListId((cardData as any).list_id)
-        const sourceList = listsData.find((l: any) => l.id === (cardData as any).list_id)
-        setSelectedPosition((sourceList?.cards?.length ?? 0) + 1)
+        if (listsData) {
+          setLists(listsData)
+          setSelectedListId((cardData as any).list_id)
+          const sourceList = listsData.find((l: any) => l.id === (cardData as any).list_id)
+          setSelectedPosition((sourceList?.cards?.length ?? 0) + 1)
+        }
+      } catch (err) {
+        console.error('Error fetching card data:', err)
+      } finally {
+        setFetching(false)
       }
-    } catch (err) {
-      console.error('Error fetching card data:', err)
-    } finally {
-      setFetching(false)
     }
-  }
+
+    fetchData()
+  }, [isOpen, sourceCardId])
 
   const handleListChange = (listId: string) => {
     setSelectedListId(listId)
@@ -147,7 +147,6 @@ export function CopyCardModal({ sourceCardId, isOpen, onClose, onSuccess }: Copy
       }
 
       onSuccess()
-      onClose()
     } catch (err) {
       console.error('Error copying card:', err)
       alert('카드 복사 실패')
