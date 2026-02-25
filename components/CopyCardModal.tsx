@@ -55,7 +55,7 @@ export function CopyCardModal({ sourceCardId, isOpen, onClose, onSuccess }: Copy
         if (listsData) {
           setLists(listsData)
           setSelectedListId((cardData as any).list_id)
-          const sourceList = listsData.find((l: any) => l.id === (cardData as any).list_id)
+          const sourceList = listsData.find((l: any) => l.id === (cardData as any).list_id) as any
           setSelectedPosition((sourceList?.cards?.length ?? 0) + 1)
         }
       } catch (err) {
@@ -70,12 +70,12 @@ export function CopyCardModal({ sourceCardId, isOpen, onClose, onSuccess }: Copy
 
   const handleListChange = (listId: string) => {
     setSelectedListId(listId)
-    const list = lists.find((l: any) => l.id === listId)
+    const list = lists.find((l: any) => l.id === listId) as any
     setSelectedPosition((list?.cards?.length ?? 0) + 1)
   }
 
   const getPositionCount = () => {
-    const list = lists.find((l: any) => l.id === selectedListId)
+    const list = lists.find((l: any) => l.id === selectedListId) as any
     return (list?.cards?.length ?? 0) + 1
   }
 
