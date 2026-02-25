@@ -253,14 +253,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   )
 
   return (
-    <div className="min-h-screen bg-dark-bg">
-      <Toolbar
-        boardId={board.id}
-        onViewChange={setCurrentView}
-        onUserFilterChange={setUserFilter}
-        users={users}
-      />
-
+    <div className="min-h-screen bg-dark-bg pb-[50px]">
       {currentView === 'board' ? (
         <DndContext
           sensors={sensors}
@@ -323,6 +316,16 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
           currentUserName={currentUserName}
         />
       )}
+
+      {/* Fixed bottom toolbar */}
+      <div className="fixed bottom-0 left-0 right-0 z-40">
+        <Toolbar
+          boardId={board.id}
+          onViewChange={setCurrentView}
+          onUserFilterChange={setUserFilter}
+          users={users}
+        />
+      </div>
     </div>
   )
 }
