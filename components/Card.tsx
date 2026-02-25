@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { CopyCardModal } from './CopyCardModal'
 import { motion } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -28,6 +30,10 @@ function formatCardDates(start_date: string | null, due_date: string | null): st
 
 export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'User' }: CardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null)
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false)
+  const contextMenuRef = useRef<HTMLDivElement>(null)
+  const supabase = createClient()
 
   const {
     attributes,
@@ -41,6 +47,32 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  }
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
+        setContextMenu(null)
+      }
+    }
+    if (contextMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [contextMenu])
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setContextMenu({ x: e.clientX, y: e.clientY })
+  }
+
+  const handleDeleteCard = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setContextMenu(null)
+    if (!confirm('정말 이 카드를 삭제하시겠습니까?')) return
+    await supabase.from('cards').delete().eq('id', card.id)
+    onUpdate?.()
   }
 
   const allItems = card.checklists?.flatMap((cl: any) => cl.checklist_items || []) || []
@@ -60,6 +92,7 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
         transition={{ duration: 0.15 }}
         whileHover={{ y: -2, transition: { duration: 0.1 } }}
         onClick={() => setIsModalOpen(true)}
+        onContextMenu={handleContextMenu}
         className="relative group bg-white border border-gray-200 rounded-lg p-3 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
       >
         {/* Hover edit button */}
@@ -124,6 +157,33 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
             ))}
           </div>
         )}
+
+        {/* Right-click context menu */}
+        {contextMenu && (
+          <div
+            ref={contextMenuRef}
+            className="fixed bg-white border border-gray-200 rounded-lg shadow-xl z-[100] overflow-hidden py-1 min-w-[140px]"
+            style={{ left: contextMenu.x, top: contextMenu.y }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+              onClick={(e) => {
+                e.stopPropagation()
+                setContextMenu(null)
+                setIsCopyModalOpen(true)
+              }}
+            >
+              📋 카드 복사
+            </button>
+            <button
+              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+              onClick={handleDeleteCard}
+            >
+              🗑️ 카드 삭제
+            </button>
+          </div>
+        )}
       </motion.div>
 
       <CardModal
@@ -133,6 +193,12 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
         onUpdate={onUpdate || (() => {})}
         currentUserId={currentUserId}
         currentUserName={currentUserName}
+      />
+      <CopyCardModal
+        sourceCardId={card.id}
+        isOpen={isCopyModalOpen}
+        onClose={() => setIsCopyModalOpen(false)}
+        onSuccess={() => { setIsCopyModalOpen(false); onUpdate?.() }}
       />
     </>
   )
