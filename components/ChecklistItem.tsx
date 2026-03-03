@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 type ChecklistItemProps = {
   item: any
@@ -14,6 +16,21 @@ export function ChecklistItem({ item, onUpdate }: ChecklistItemProps) {
   const [dueDate, setDueDate] = useState(item.due_date || '')
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id })
+
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  }
 
   const handleToggle = async () => {
     setLoading(true)
@@ -76,7 +93,7 @@ export function ChecklistItem({ item, onUpdate }: ChecklistItemProps) {
 
   if (isEditing) {
     return (
-      <div className="flex flex-col gap-2 p-2 bg-gray-50 rounded">
+      <div ref={setNodeRef} style={sortableStyle} className="flex flex-col gap-2 p-2 bg-gray-50 rounded">
         <input
           type="text"
           value={title}
@@ -113,7 +130,16 @@ export function ChecklistItem({ item, onUpdate }: ChecklistItemProps) {
   }
 
   return (
-    <div className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded group">
+    <div ref={setNodeRef} style={sortableStyle} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded group">
+      {/* Drag handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing opacity-30 hover:opacity-100 transition-opacity select-none px-0.5 text-sm"
+        title="드래그하여 순서 변경"
+      >
+        ⠿
+      </div>
       <input
         type="checkbox"
         checked={item.completed}
