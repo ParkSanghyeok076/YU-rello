@@ -100,6 +100,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
     <motion.div
       ref={setSortableRef}
       style={style}
+      data-no-pan
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: isDragging ? 0.5 : 1, x: 0 }}
       transition={{ duration: 0.2 }}

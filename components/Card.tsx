@@ -85,6 +85,7 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
       <motion.div
         ref={setNodeRef}
         style={style}
+        data-no-pan
         {...attributes}
         {...listeners}
         initial={{ opacity: 0, y: -8 }}
