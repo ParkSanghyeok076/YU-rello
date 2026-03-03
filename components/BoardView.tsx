@@ -45,6 +45,10 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   const [boardMembers, setBoardMembers] = useState(initialBoardMembers)
   const memberManagerRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const isPanningRef = useRef(false)
+  const panStart = useRef({ x: 0, y: 0, scrollLeft: 0, scrollTop: 0 })
+  const [isPanning, setIsPanning] = useState(false)
 
   // 현재 유저 이름 조회
   const currentUserName = users.find(u => u.id === currentUserId)?.name || 'User'
@@ -84,6 +88,15 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
     }
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isMemberManagerOpen])
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      isPanningRef.current = false
+      setIsPanning(false)
+    }
+    window.addEventListener('mouseup', handleGlobalMouseUp)
+    return () => window.removeEventListener('mouseup', handleGlobalMouseUp)
+  }, [])
 
   useRealtimeSubscription(board.id, handleRefresh)
 
@@ -177,6 +190,38 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
     setActiveId(null)
   }
 
+  const handlePanMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return
+    const target = e.target as HTMLElement
+    if (target.closest('[data-no-pan], button, input, a, select, textarea')) return
+
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    isPanningRef.current = true
+    setIsPanning(true)
+    panStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      scrollLeft: container.scrollLeft,
+      scrollTop: container.scrollTop,
+    }
+    e.preventDefault()
+  }
+
+  const handlePanMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPanningRef.current) return
+    const container = scrollContainerRef.current
+    if (!container) return
+    container.scrollLeft = panStart.current.scrollLeft - (e.clientX - panStart.current.x)
+    container.scrollTop = panStart.current.scrollTop - (e.clientY - panStart.current.y)
+  }
+
+  const stopPanOnElement = () => {
+    isPanningRef.current = false
+    setIsPanning(false)
+  }
+
   const filteredLists = userFilter
     ? lists
         .filter((list: any) =>
@@ -264,7 +309,14 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
 
       {/* Content area fills remaining height — horizontal scrollbar always at viewport bottom */}
       {currentView === 'board' ? (
-        <div className="flex-1 overflow-x-auto overflow-y-auto">
+        <div
+          ref={scrollContainerRef}
+          className={`flex-1 overflow-x-auto overflow-y-auto ${isPanning ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+          onMouseDown={handlePanMouseDown}
+          onMouseMove={handlePanMouseMove}
+          onMouseUp={stopPanOnElement}
+          onMouseLeave={stopPanOnElement}
+        >
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
