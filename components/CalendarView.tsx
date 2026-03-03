@@ -11,9 +11,13 @@ type CalendarViewProps = {
 }
 
 function addOneDay(dateStr: string): string {
-  const d = new Date(dateStr.split('T')[0] + 'T00:00:00')
-  d.setDate(d.getDate() + 1)
-  return d.toISOString().split('T')[0]
+  const [y, m, d] = dateStr.split('T')[0].split('-').map(Number)
+  const date = new Date(y, m - 1, d + 1)
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')
 }
 
 export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
