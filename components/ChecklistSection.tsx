@@ -33,7 +33,7 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
     [...items].sort((a, b) => a.position - b.position)
   )
   const [draggingItem, setDraggingItem] = useState<any>(null)
-  const dndSensors = useSensors(useSensor(PointerSensor))
+  const dndSensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
 
   useEffect(() => {
     setLocalItems([...items].sort((a, b) => a.position - b.position))
@@ -96,7 +96,7 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
     try {
       await Promise.all(
         newItems.map((item: any, index: number) =>
-          supabase.from('checklist_items').update({ position: index + 1 }).eq('id', item.id)
+          supabase.from('checklist_items').update({ position: index }).eq('id', item.id)
         )
       )
       onUpdate()
@@ -117,7 +117,7 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
           checklist_id: checklist.id,
           title: newItemTitle.trim(),
           due_date: newItemDueDate || null,
-          position: items.length,
+          position: localItems.length,
         })
       if (error) throw error
       setNewItemTitle('')
