@@ -1,8 +1,16 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ChecklistItem } from './ChecklistItem'
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 
 type ChecklistSectionProps = {
   checklist: { id: string; title: string }
@@ -20,6 +28,16 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
   const isSavingTitle = useRef(false)
+
+  const [localItems, setLocalItems] = useState(() =>
+    [...items].sort((a, b) => a.position - b.position)
+  )
+  const [draggingItem, setDraggingItem] = useState<any>(null)
+  const dndSensors = useSensors(useSensor(PointerSensor))
+
+  useEffect(() => {
+    setLocalItems([...items].sort((a, b) => a.position - b.position))
+  }, [items])
 
   const handleSaveTitle = async () => {
     if (isSavingTitle.current) return
@@ -58,6 +76,34 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
     } catch (error) {
       console.error('Error deleting checklist:', error)
       alert('체크리스트 삭제 실패')
+    }
+  }
+
+  const handleItemDragEnd = async (event: any) => {
+    const { active, over } = event
+    setDraggingItem(null)
+    if (!over || active.id === over.id) return
+
+    const oldIndex = localItems.findIndex((item: any) => item.id === active.id)
+    const newIndex = localItems.findIndex((item: any) => item.id === over.id)
+    if (oldIndex === newIndex) return
+
+    const newItems = arrayMove(localItems, oldIndex, newIndex)
+    const previousItems = [...localItems]
+
+    setLocalItems(newItems)
+
+    try {
+      await Promise.all(
+        newItems.map((item: any, index: number) =>
+          supabase.from('checklist_items').update({ position: index + 1 }).eq('id', item.id)
+        )
+      )
+      onUpdate()
+    } catch (error) {
+      console.error('Error reordering checklist items:', error)
+      setLocalItems(previousItems)
+      alert('순서 변경 실패')
     }
   }
 
@@ -141,13 +187,35 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
       )}
 
       {/* Items */}
-      <div className="space-y-1 mb-2">
-        {[...items]
-          .sort((a, b) => a.position - b.position)
-          .map((item) => (
-            <ChecklistItem key={item.id} item={item} onUpdate={onUpdate} />
-          ))}
-      </div>
+      <DndContext
+        sensors={dndSensors}
+        onDragStart={(event) =>
+          setDraggingItem(localItems.find((i: any) => i.id === event.active.id) ?? null)
+        }
+        onDragEnd={handleItemDragEnd}
+        onDragCancel={() => setDraggingItem(null)}
+      >
+        <SortableContext
+          items={localItems.map((i: any) => i.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-1 mb-2">
+            {localItems.map((item: any) => (
+              <ChecklistItem key={item.id} item={item} onUpdate={onUpdate} />
+            ))}
+          </div>
+        </SortableContext>
+        <DragOverlay>
+          {draggingItem ? (
+            <div className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded shadow-lg opacity-90">
+              <span className="text-gray-400 select-none text-sm">⠿</span>
+              <span className={`text-navy ${draggingItem.completed ? 'line-through text-gray-400' : ''}`}>
+                {draggingItem.title}
+              </span>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
 
       {/* Add new item */}
       {isAdding ? (
