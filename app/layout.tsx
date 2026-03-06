@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "YU-rello",
   description: "Collaboration tool inspired by Trello",
+  icons: {
+    icon: '/로고사진.png',
+  },
 };
 
 export default function RootLayout({
