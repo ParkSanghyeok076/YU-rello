@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 type AuthFormProps = {
   mode: 'login' | 'signup'
@@ -54,9 +55,9 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <div className="w-full max-w-md mx-auto mt-16 p-8 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-[family-name:var(--font-logo)] font-bold text-navy mb-8 text-center">
-        YU-rello
-      </h1>
+      <div className="flex justify-center mb-8">
+        <Image src="/로고사진.png" alt="YU-rello" width={160} height={54} className="object-contain" />
+      </div>
       <h2 className="text-xl text-navy mb-6">
         {mode === 'login' ? '로그인' : '회원가입'}
       </h2>

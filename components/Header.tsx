@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { NotificationBell } from './NotificationBell'
+import Image from 'next/image'
 
 type HeaderProps = {
   userEmail: string
@@ -24,7 +25,7 @@ export function Header({ userEmail, userName, userId }: HeaderProps) {
     <header className="bg-black border-b border-gray-800 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <h1 className="text-2xl font-[family-name:var(--font-logo)] font-bold">YU-rello</h1>
+          <Image src="/로고사진.png" alt="YU-rello" width={120} height={40} className="object-contain" />
         </div>
 
         <div className="flex items-center gap-4">
