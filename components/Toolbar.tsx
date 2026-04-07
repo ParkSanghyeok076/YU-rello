@@ -29,8 +29,9 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
   const [currentView, setCurrentView] = useState<'board' | 'calendar'>('board')
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [isAlarmOpen, setIsAlarmOpen] = useState(false)
-  const [upcomingTasks, setUpcomingTasks] = useState<UpcomingTask[]>([])
+  const [allUpcomingTasks, setAllUpcomingTasks] = useState<UpcomingTask[]>([])
   const [alarmLoading, setAlarmLoading] = useState(false)
+  const [selectedAlarmMember, setSelectedAlarmMember] = useState<string | null>(null)
   const alarmRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
@@ -92,7 +93,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
 
       if (cardIds.length === 0) {
         console.log('⚠️ [알림 디버그] cardIds가 비어있음 - 알림 없음으로 표시')
-        setUpcomingTasks([])
+        setAllUpcomingTasks([])
         return
       }
 
@@ -124,7 +125,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
 
       if (error) throw error
 
-      // Filter by cardIds and map to expected format
+      // Filter by cardIds and map to expected format (store all for client-side member filter)
       const filteredTasks = (data || [])
         .filter((item: any) => {
           const cardId = item.checklists?.cards?.id
@@ -134,13 +135,12 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
           ...item,
           cards: item.checklists?.cards || null
         }))
-        .slice(0, 5)
 
       console.log('🔍 [알림 디버그] Step 2 - filteredTasks:', filteredTasks)
-      setUpcomingTasks(filteredTasks as UpcomingTask[])
+      setAllUpcomingTasks(filteredTasks as UpcomingTask[])
     } catch (err) {
       console.error('❌ [알림 디버그] Error fetching upcoming tasks:', err)
-      setUpcomingTasks([])
+      setAllUpcomingTasks([])
     } finally {
       setAlarmLoading(false)
     }
@@ -185,47 +185,66 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
 
           {isAlarmOpen && (
             <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-100">
-                <h3 className="font-semibold text-gray-800 text-sm">임박한 할 일 (상위 5개)</h3>
+              <div className="px-4 py-3 border-b border-gray-100 space-y-2">
+                <h3 className="font-semibold text-gray-800 text-sm">임박한 할 일 (상위 10개)</h3>
+                <select
+                  value={selectedAlarmMember || 'all'}
+                  onChange={(e) => setSelectedAlarmMember(e.target.value === 'all' ? null : e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                >
+                  <option value="all">전체 멤버</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>{user.name}</option>
+                  ))}
+                </select>
               </div>
 
               {alarmLoading ? (
                 <div className="px-4 py-6 text-center text-sm text-gray-400">불러오는 중...</div>
-              ) : upcomingTasks.length === 0 ? (
-                <div className="px-4 py-6 text-center text-sm text-gray-400">임박한 할 일이 없습니다</div>
-              ) : (
-                <ul>
-                  {upcomingTasks.map((task) => {
-                    const members = task.cards?.card_members ?? []
-                    const memberNames = members
-                      .map((m) => m.profiles?.name)
-                      .filter(Boolean)
-                      .join(', ')
-                    const dueDateStr = new Date(task.due_date.split('T')[0] + 'T00:00:00')
-                      .toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
-
-                    return (
-                      <li key={task.id} className="px-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                        <div className="flex items-start justify-between gap-2">
-                          <span className="text-gray-800 text-sm font-medium leading-snug">{task.title}</span>
-                          <span className="text-xs text-gray-400 shrink-0">📅 {dueDateStr}</span>
-                        </div>
-                        <div className="mt-1 text-xs text-gray-400">
-                          {task.cards?.title && (
-                            <span className="text-gray-500">{task.cards.title}</span>
-                          )}
-                          {memberNames && (
-                            <span className="ml-2 text-gray-400">· 👤 {memberNames}</span>
-                          )}
-                          {!memberNames && (
-                            <span className="ml-2 text-gray-400">· 담당자 없음</span>
-                          )}
-                        </div>
-                      </li>
+              ) : (() => {
+                const displayedTasks = (selectedAlarmMember
+                  ? allUpcomingTasks.filter((task) =>
+                      task.cards?.card_members.some((m) => m.user_id === selectedAlarmMember)
                     )
-                  })}
-                </ul>
-              )}
+                  : allUpcomingTasks
+                ).slice(0, 10)
+
+                return displayedTasks.length === 0 ? (
+                  <div className="px-4 py-6 text-center text-sm text-gray-400">임박한 할 일이 없습니다</div>
+                ) : (
+                  <ul>
+                    {displayedTasks.map((task) => {
+                      const members = task.cards?.card_members ?? []
+                      const memberNames = members
+                        .map((m) => m.profiles?.name)
+                        .filter(Boolean)
+                        .join(', ')
+                      const dueDateStr = new Date(task.due_date.split('T')[0] + 'T00:00:00')
+                        .toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
+
+                      return (
+                        <li key={task.id} className="px-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                          <div className="flex items-start justify-between gap-2">
+                            <span className="text-gray-800 text-sm font-medium leading-snug">{task.title}</span>
+                            <span className="text-xs text-gray-400 shrink-0">📅 {dueDateStr}</span>
+                          </div>
+                          <div className="mt-1 text-xs text-gray-400">
+                            {task.cards?.title && (
+                              <span className="text-gray-500">{task.cards.title}</span>
+                            )}
+                            {memberNames && (
+                              <span className="ml-2 text-gray-400">· 👤 {memberNames}</span>
+                            )}
+                            {!memberNames && (
+                              <span className="ml-2 text-gray-400">· 담당자 없음</span>
+                            )}
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )
+              })()}
             </div>
           )}
         </div>
