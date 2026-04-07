@@ -150,7 +150,7 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
             {card.card_members.slice(0, 3).map((member: any) => (
               <div
                 key={member.user_id}
-                className="w-6 h-6 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center font-medium"
+                className="w-8 h-6 rounded-lg bg-gray-600 text-white text-xs flex items-center justify-center font-medium"
                 title={member.profiles?.name}
               >
                 {(member.profiles?.name?.slice(1) || member.profiles?.name?.[0] || "").toUpperCase()}

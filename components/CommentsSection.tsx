@@ -81,7 +81,7 @@ export function CommentsSection({
 
       {/* Add comment */}
       <div className="mb-4 flex gap-3">
-        <div className="w-8 h-8 rounded-full bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-8 rounded-lg bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
           {(currentUserName?.slice(1) || currentUserName?.[0] || "").toUpperCase()}
         </div>
         <div className="flex-1">

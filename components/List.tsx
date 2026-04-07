@@ -137,7 +137,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
             <div
               key={m.user_id}
               title={m.profiles?.name}
-              className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center -ml-1 first:ml-0 border border-[#161b22]"
+              className="w-8 h-6 rounded-lg bg-blue-500 text-white text-xs flex items-center justify-center -ml-1 first:ml-0 border border-[#161b22]"
             >
               {(m.profiles?.name?.slice(1) || m.profiles?.name?.[0] || "").toUpperCase()}
             </div>
