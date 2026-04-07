@@ -261,7 +261,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
             title={m.profiles?.name}
             className="w-8 h-8 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center -ml-1 first:ml-0 border-2 border-[#0d1117]"
           >
-            {m.profiles?.name?.[0]?.toUpperCase()}
+            {(m.profiles?.name?.slice(1) || m.profiles?.name?.[0] || "").toUpperCase()}
           </div>
         ))}
         {boardMembers.length > 3 && (

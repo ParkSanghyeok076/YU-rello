@@ -153,7 +153,7 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
                 className="w-6 h-6 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center font-medium"
                 title={member.profiles?.name}
               >
-                {member.profiles?.name?.[0]?.toUpperCase()}
+                {(member.profiles?.name?.slice(1) || member.profiles?.name?.[0] || "").toUpperCase()}
               </div>
             ))}
           </div>

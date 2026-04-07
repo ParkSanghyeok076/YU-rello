@@ -70,7 +70,7 @@ export function Comment({ comment, currentUserId, onUpdate }: CommentProps) {
   return (
     <div className="flex gap-3">
       <div className="w-8 h-8 rounded-full bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
-        {comment.profiles?.name?.[0]?.toUpperCase()}
+        {(comment.profiles?.name?.slice(1) || comment.profiles?.name?.[0] || "").toUpperCase()}
       </div>
 
       <div className="flex-1">

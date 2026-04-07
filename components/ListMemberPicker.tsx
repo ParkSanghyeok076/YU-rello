@@ -58,7 +58,7 @@ export function ListMemberPicker({ listId, currentMembers, users, onUpdate, onCl
               className="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
               <div className="w-8 h-8 rounded-full bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
-                {user.name?.[0]?.toUpperCase()}
+                {(user.name?.slice(1) || user.name?.[0] || "").toUpperCase()}
               </div>
               <div className="flex-1 text-left">
                 <p className="text-navy font-medium">{user.name}</p>

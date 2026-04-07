@@ -139,7 +139,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
               title={m.profiles?.name}
               className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center -ml-1 first:ml-0 border border-[#161b22]"
             >
-              {m.profiles?.name?.[0]?.toUpperCase()}
+              {(m.profiles?.name?.slice(1) || m.profiles?.name?.[0] || "").toUpperCase()}
             </div>
           ))}
           {(list.list_members || []).length > 3 && (

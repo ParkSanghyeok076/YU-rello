@@ -24,7 +24,7 @@ export function MembersSection({ cardId, cardTitle, members, onUpdate }: Members
             className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded"
           >
             <div className="w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center">
-              {member.profiles?.name?.[0]?.toUpperCase()}
+              {(member.profiles?.name?.slice(1) || member.profiles?.name?.[0] || "").toUpperCase()}
             </div>
             <span className="text-sm text-navy">{member.profiles?.name}</span>
           </div>

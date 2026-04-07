@@ -82,7 +82,7 @@ export function CommentsSection({
       {/* Add comment */}
       <div className="mb-4 flex gap-3">
         <div className="w-8 h-8 rounded-full bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
-          {currentUserName?.[0]?.toUpperCase()}
+          {(currentUserName?.slice(1) || currentUserName?.[0] || "").toUpperCase()}
         </div>
         <div className="flex-1">
           <textarea
