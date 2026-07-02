@@ -253,7 +253,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
                                 {task.title}
                               </span>
                             </div>
-                            <span className={`flex items-center gap-1 text-xs shrink-0 ${isOverdue ? 'text-red-400 font-medium' : 'text-gray-400'}`}>
+                            <span className={`flex items-center gap-1 text-xs shrink-0 ${isOverdue ? 'text-red-400 font-medium' : 'text-gray-600'}`}>
                               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                                 <line x1="16" y1="2" x2="16" y2="6"/>
@@ -263,12 +263,12 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
                               {dueDateStr}
                             </span>
                           </div>
-                          <div className="mt-1 text-xs text-gray-400">
+                          <div className="mt-1 text-xs text-gray-600">
                             {task.cards?.title && (
-                              <span className={isOverdue ? 'text-red-400' : 'text-gray-500'}>{task.cards.title}</span>
+                              <span className={isOverdue ? 'text-red-400' : 'text-gray-700'}>{task.cards.title}</span>
                             )}
                             {memberNames && (
-                              <span className="inline-flex items-center gap-1 ml-2 text-gray-400">
+                              <span className="inline-flex items-center gap-1 ml-2 text-gray-600">
                                 ·
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
