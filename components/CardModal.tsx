@@ -229,7 +229,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                   }}
                   disabled={loading}
                   autoFocus
-                  className="text-2xl font-bold text-gray-900 w-full border-b-2 border-[#00d992] focus:outline-none bg-transparent"
+                  className="text-2xl font-bold text-gray-900 w-full border-b-2 border-navy focus:outline-none bg-transparent"
                 />
               ) : (
                 <h2
@@ -269,7 +269,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded text-gray-900 resize-none focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+                  className="w-full p-3 border border-gray-300 rounded text-gray-900 resize-none focus:outline-none focus:ring-2 focus:ring-navy"
                   rows={5}
                   placeholder="이 카드에 대한 설명을 추가하세요..."
                 />
@@ -277,7 +277,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                   <button
                     onClick={handleUpdateDescription}
                     disabled={loading}
-                    className="px-4 py-2 bg-[#00d992] text-[#0a1a14] rounded hover:bg-[#00b87a] disabled:opacity-50"
+                    className="px-4 py-2 bg-navy text-white rounded hover:bg-navy-light disabled:opacity-50"
                   >
                     {loading ? '저장 중...' : '저장'}
                   </button>
@@ -323,7 +323,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                   value={startDate}
                   max={dueDate || undefined}
                   onChange={(e) => handleUpdateStartDate(e.target.value)}
-                  className="px-3 py-1.5 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+                  className="px-3 py-1.5 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-navy"
                 />
                 {startDate && (
                   <button
@@ -342,7 +342,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
                   value={dueDate}
                   min={startDate || undefined}
                   onChange={(e) => handleUpdateDueDate(e.target.value)}
-                  className="px-3 py-1.5 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+                  className="px-3 py-1.5 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-navy"
                 />
                 {dueDate && (
                   <button

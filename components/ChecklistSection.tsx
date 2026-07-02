@@ -181,7 +181,7 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
           <span className="text-xs text-gray-500 w-8">{Math.round(progress)}%</span>
           <div className="flex-1 bg-gray-200 rounded-full h-2">
             <div
-              className="bg-[#00d992] h-2 rounded-full transition-all"
+              className="bg-navy h-2 rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -234,19 +234,19 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
             }}
             placeholder="항목 제목..."
             autoFocus
-            className="px-2 py-1 border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+            className="px-2 py-1 border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-navy"
           />
           <div className="flex items-center gap-2">
             <input
               type="date"
               value={newItemDueDate}
               onChange={(e) => setNewItemDueDate(e.target.value)}
-              className="px-2 py-1 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+              className="px-2 py-1 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-navy"
             />
             <button
               onClick={handleAdd}
               disabled={loading || !newItemTitle.trim()}
-              className="px-3 py-1 bg-[#00d992] text-[#0a1a14] text-sm rounded hover:bg-[#00b87a] disabled:opacity-50"
+              className="px-3 py-1 bg-navy text-white text-sm rounded hover:bg-navy-light disabled:opacity-50"
             >
               {loading ? '추가 중...' : '추가'}
             </button>

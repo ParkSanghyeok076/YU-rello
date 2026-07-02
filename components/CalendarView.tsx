@@ -36,8 +36,8 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
                 id: item.id,
                 title: `${item.completed ? '✓ ' : ''}${item.title}`,
                 date: item.due_date.split('T')[0],
-                backgroundColor: item.completed ? '#22c55e' : '#00d992',
-                borderColor: item.completed ? '#16a34a' : '#00b87a',
+                backgroundColor: item.completed ? '#22c55e' : '#1a2b4a',
+                borderColor: item.completed ? '#16a34a' : '#0a1b3a',
                 extendedProps: {
                   cardId: card.id,
                   cardTitle: card.title,
@@ -87,20 +87,19 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
       <style>{`
         .fc {
           --fc-border-color: #e5e7eb;
-          --fc-button-bg-color: #00d992;
-          --fc-button-border-color: #00d992;
-          --fc-button-hover-bg-color: #00b87a;
-          --fc-button-hover-border-color: #00b87a;
-          --fc-button-active-bg-color: #009966;
-          --fc-button-active-border-color: #009966;
-          --fc-today-bg-color: rgba(0,217,146,0.06);
+          --fc-button-bg-color: #1a2b4a;
+          --fc-button-border-color: #1a2b4a;
+          --fc-button-hover-bg-color: #2a3b5a;
+          --fc-button-hover-border-color: #2a3b5a;
+          --fc-button-active-bg-color: #0a1b3a;
+          --fc-button-active-border-color: #0a1b3a;
+          --fc-today-bg-color: #f0f9ff;
         }
-        .fc-button { color: #0a1a14 !important; font-weight: 600 !important; }
         .fc-event { cursor: pointer; }
         .fc-event:hover { opacity: 0.8; }
-        .fc .fc-daygrid-day-number { color: #111827; }
-        .fc .fc-col-header-cell-cushion { color: #111827; font-weight: 600; }
-        .fc .fc-toolbar-title { color: #111827; font-size: 1.5rem; font-weight: 700; }
+        .fc .fc-daygrid-day-number { color: #1a2b4a; }
+        .fc .fc-col-header-cell-cushion { color: #1a2b4a; font-weight: 600; }
+        .fc .fc-toolbar-title { color: #1a2b4a; font-size: 1.5rem; font-weight: 700; }
       `}</style>
 
       <FullCalendar

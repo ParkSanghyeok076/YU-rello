@@ -92,13 +92,13 @@ export function CommentsSection({
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="댓글을 입력하세요..."
-            className="w-full px-3 py-2 border border-gray-300 rounded text-gray-900 resize-none focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+            className="w-full px-3 py-2 border border-gray-300 rounded text-gray-900 resize-none focus:outline-none focus:ring-2 focus:ring-navy"
             rows={3}
           />
           <button
             onClick={handleSubmit}
             disabled={loading || !newComment.trim()}
-            className="mt-2 px-4 py-2 bg-[#00d992] text-[#0a1a14] rounded hover:bg-[#00b87a] disabled:opacity-50"
+            className="mt-2 px-4 py-2 bg-navy text-white rounded hover:bg-navy-light disabled:opacity-50"
           >
             {loading ? '추가 중...' : '댓글 추가'}
           </button>

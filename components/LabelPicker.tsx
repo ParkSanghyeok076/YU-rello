@@ -146,14 +146,14 @@ export function LabelPicker({ boardId, cardId, currentLabels, onUpdate, onClose 
             onChange={(e) => setNewLabelName(e.target.value)}
             placeholder="라벨 이름..."
             autoFocus
-            className="w-full px-2 py-1 border border-gray-300 rounded text-gray-900 mb-2 focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+            className="w-full px-2 py-1 border border-gray-300 rounded text-gray-900 mb-2 focus:outline-none focus:ring-2 focus:ring-navy"
           />
           <div className="grid grid-cols-4 gap-2 mb-2">
             {PRESET_COLORS.map((preset) => (
               <button
                 key={preset.color}
                 onClick={() => setNewLabelColor(preset.color)}
-                className={`w-full h-8 rounded ${newLabelColor === preset.color ? 'ring-2 ring-[#00d992] ring-offset-1' : ''}`}
+                className={`w-full h-8 rounded ${newLabelColor === preset.color ? 'ring-2 ring-navy ring-offset-1' : ''}`}
                 style={{ backgroundColor: preset.color }}
                 title={preset.name}
               />
@@ -163,7 +163,7 @@ export function LabelPicker({ boardId, cardId, currentLabels, onUpdate, onClose 
             <button
               onClick={handleCreateLabel}
               disabled={loading || !newLabelName.trim()}
-              className="flex-1 px-3 py-1 bg-[#00d992] text-[#0a1a14] text-sm rounded hover:bg-[#00b87a] disabled:opacity-50"
+              className="flex-1 px-3 py-1 bg-navy text-white text-sm rounded hover:bg-navy-light disabled:opacity-50"
             >
               생성
             </button>

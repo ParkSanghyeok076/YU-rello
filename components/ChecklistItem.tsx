@@ -98,19 +98,19 @@ export function ChecklistItem({ item, onUpdate }: ChecklistItemProps) {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="px-2 py-1 border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+          className="px-2 py-1 border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-navy"
         />
         <div className="flex items-center gap-2">
           <input
             type="date"
             value={dueDate ? new Date(dueDate).toISOString().split('T')[0] : ''}
             onChange={(e) => setDueDate(e.target.value ? new Date(e.target.value).toISOString() : '')}
-            className="px-2 py-1 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d992]"
+            className="px-2 py-1 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-navy"
           />
           <button
             onClick={handleUpdate}
             disabled={loading || !title.trim()}
-            className="px-3 py-1 bg-[#00d992] text-[#0a1a14] text-sm rounded hover:bg-[#00b87a] disabled:opacity-50"
+            className="px-3 py-1 bg-navy text-white text-sm rounded hover:bg-navy-light disabled:opacity-50"
           >
             저장
           </button>
@@ -145,7 +145,7 @@ export function ChecklistItem({ item, onUpdate }: ChecklistItemProps) {
         checked={item.completed}
         onChange={handleToggle}
         disabled={loading}
-        className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-[#00d992] cursor-pointer"
+        className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-navy cursor-pointer"
       />
       <div onClick={() => setIsEditing(true)} className="flex-1 cursor-pointer">
         <span className={`text-gray-900 ${item.completed ? 'line-through text-gray-400' : ''}`}>
