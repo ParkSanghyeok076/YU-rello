@@ -97,7 +97,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
         return
       }
 
-      // Step 2: fetch upcoming checklist items scoped to those cards
+      // Step 2: fetch all incomplete checklist items (including overdue) scoped to those cards
       const { data, error } = await supabase
         .from('checklist_items')
         .select(`
@@ -114,7 +114,6 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
           )
         `)
         .eq('completed', false)
-        .gte('due_date', today)
         .not('due_date', 'is', null)
         .order('due_date', { ascending: true })
         .limit(100)
@@ -126,7 +125,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
       if (error) throw error
 
       // Filter by cardIds and map to expected format (store all for client-side member filter)
-      const filteredTasks = (data || [])
+      const mappedTasks = (data || [])
         .filter((item: any) => {
           const cardId = item.checklists?.cards?.id
           return cardId && cardIds.includes(cardId)
@@ -135,6 +134,12 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
           ...item,
           cards: item.checklists?.cards || null
         }))
+
+      // Sort: overdue items first, then upcoming — each group sorted by due_date ascending
+      const filteredTasks = [
+        ...mappedTasks.filter((t: any) => t.due_date < today),
+        ...mappedTasks.filter((t: any) => t.due_date >= today),
+      ]
 
       console.log('🔍 [알림 디버그] Step 2 - filteredTasks:', filteredTasks)
       setAllUpcomingTasks(filteredTasks as UpcomingTask[])
@@ -186,7 +191,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
           {isAlarmOpen && (
             <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
               <div className="px-4 py-3 border-b border-gray-100 space-y-2">
-                <h3 className="font-semibold text-gray-800 text-sm">임박한 할 일 (상위 10개)</h3>
+                <h3 className="font-semibold text-gray-800 text-sm">할 일 알림 (상위 10개)</h3>
                 <select
                   value={selectedAlarmMember || 'all'}
                   onChange={(e) => setSelectedAlarmMember(e.target.value === 'all' ? null : e.target.value)}
@@ -202,6 +207,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
               {alarmLoading ? (
                 <div className="px-4 py-6 text-center text-sm text-gray-400">불러오는 중...</div>
               ) : (() => {
+                const today = new Date().toISOString().split('T')[0]
                 const displayedTasks = (selectedAlarmMember
                   ? allUpcomingTasks.filter((task) =>
                       task.cards?.card_members.some((m) => m.user_id === selectedAlarmMember)
@@ -214,6 +220,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
                 ) : (
                   <ul>
                     {displayedTasks.map((task) => {
+                      const isOverdue = task.due_date.split('T')[0] < today
                       const members = task.cards?.card_members ?? []
                       const memberNames = members
                         .map((m) => m.profiles?.name)
@@ -223,14 +230,32 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
                         .toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
 
                       return (
-                        <li key={task.id} className="px-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                        <li
+                          key={task.id}
+                          className={`px-4 py-3 border-b last:border-0 ${
+                            isOverdue
+                              ? 'bg-red-50 border-red-100 hover:bg-red-100'
+                              : 'border-gray-100 hover:bg-gray-50'
+                          }`}
+                        >
                           <div className="flex items-start justify-between gap-2">
-                            <span className="text-gray-800 text-sm font-medium leading-snug">{task.title}</span>
-                            <span className="text-xs text-gray-400 shrink-0">📅 {dueDateStr}</span>
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              {isOverdue && (
+                                <span className="shrink-0 text-xs font-semibold text-red-500 bg-red-100 px-1.5 py-0.5 rounded">
+                                  기한 초과
+                                </span>
+                              )}
+                              <span className={`text-sm font-medium leading-snug ${isOverdue ? 'text-red-800' : 'text-gray-800'}`}>
+                                {task.title}
+                              </span>
+                            </div>
+                            <span className={`text-xs shrink-0 ${isOverdue ? 'text-red-400 font-medium' : 'text-gray-400'}`}>
+                              📅 {dueDateStr}
+                            </span>
                           </div>
                           <div className="mt-1 text-xs text-gray-400">
                             {task.cards?.title && (
-                              <span className="text-gray-500">{task.cards.title}</span>
+                              <span className={isOverdue ? 'text-red-400' : 'text-gray-500'}>{task.cards.title}</span>
                             )}
                             {memberNames && (
                               <span className="ml-2 text-gray-400">· 👤 {memberNames}</span>
