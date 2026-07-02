@@ -1,0 +1,12 @@
+{"t":0,"agent":"ab49f9d","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"aaef530","agent_type":"Explore","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"aaef530","agent_type":"Explore","event":"agent_stop","success":true,"duration_ms":241072}
+{"t":0,"agent":"a6fc12b","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ace9b28","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ab59ce0","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"system","event":"keyword_detected","keyword":"ai-slop-cleaner"}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"oh-my-claudecode:ai-slop-cleaner"}
+{"t":0,"agent":"a2f8c9e","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a1c7125","agent_type":"Explore","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a1c7125","agent_type":"Explore","event":"agent_stop","success":true,"duration_ms":76625}
+{"t":0,"agent":"accc50a","agent_type":"executor","event":"agent_start","parent_mode":"none"}

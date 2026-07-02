@@ -8,6 +8,11 @@
   --color-navy-light: #2a3b5a;
   --color-navy-dark: #0a1b3a;
 
+  /* Teal accent */
+  --color-teal: #00d992;
+  --color-teal-light: rgba(0,217,146,0.15);
+  --color-teal-dark: #00b87a;
+
   /* Dark theme */
   --color-dark-bg: #0d1117;
   --color-dark-list: #161b22;

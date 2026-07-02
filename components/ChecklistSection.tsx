@@ -140,7 +140,9 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
     <div className="mb-6">
       {/* Header */}
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-navy">☑</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600 shrink-0">
+          <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
         {isEditingTitle ? (
           <input
             type="text"
@@ -155,11 +157,11 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
               }
             }}
             autoFocus
-            className="text-lg font-semibold text-navy border-b border-navy focus:outline-none bg-transparent flex-1"
+            className="text-lg font-semibold text-gray-900 border-b border-navy focus:outline-none bg-transparent flex-1"
           />
         ) : (
           <h3
-            className="text-lg font-semibold text-navy cursor-pointer hover:underline flex-1"
+            className="text-lg font-semibold text-gray-900 cursor-pointer hover:underline flex-1"
             onClick={() => setIsEditingTitle(true)}
           >
             {checklist.title}
@@ -179,7 +181,7 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
           <span className="text-xs text-gray-500 w-8">{Math.round(progress)}%</span>
           <div className="flex-1 bg-gray-200 rounded-full h-2">
             <div
-              className="bg-navy h-2 rounded-full transition-all"
+              className="bg-[#00d992] h-2 rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -209,7 +211,7 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
           {draggingItem ? (
             <div className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded shadow-lg opacity-90">
               <span className="text-gray-400 select-none text-sm">⠿</span>
-              <span className={`text-navy ${draggingItem.completed ? 'line-through text-gray-400' : ''}`}>
+              <span className={`text-gray-900 ${draggingItem.completed ? 'line-through text-gray-400' : ''}`}>
                 {draggingItem.title}
               </span>
             </div>
@@ -232,19 +234,19 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
             }}
             placeholder="항목 제목..."
             autoFocus
-            className="px-2 py-1 border border-gray-300 rounded text-navy focus:outline-none focus:ring-2 focus:ring-navy"
+            className="px-2 py-1 border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#00d992]"
           />
           <div className="flex items-center gap-2">
             <input
               type="date"
               value={newItemDueDate}
               onChange={(e) => setNewItemDueDate(e.target.value)}
-              className="px-2 py-1 border border-gray-300 rounded text-navy text-sm focus:outline-none focus:ring-2 focus:ring-navy"
+              className="px-2 py-1 border border-gray-300 rounded text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d992]"
             />
             <button
               onClick={handleAdd}
               disabled={loading || !newItemTitle.trim()}
-              className="px-3 py-1 bg-navy text-white text-sm rounded hover:bg-navy-light disabled:opacity-50"
+              className="px-3 py-1 bg-[#00d992] text-[#0a1a14] text-sm rounded hover:bg-[#00b87a] disabled:opacity-50"
             >
               {loading ? '추가 중...' : '추가'}
             </button>

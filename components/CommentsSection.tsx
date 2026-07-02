@@ -72,8 +72,11 @@ export function CommentsSection({
 
   return (
     <div>
-      <h3 className="text-lg font-semibold text-navy mb-3 flex items-center gap-2">
-        💬 댓글
+      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        댓글
         {comments.length > 0 && (
           <span className="text-sm font-normal text-gray-600">{comments.length}개</span>
         )}
@@ -81,7 +84,7 @@ export function CommentsSection({
 
       {/* Add comment */}
       <div className="mb-4 flex gap-3">
-        <div className="w-10 h-8 rounded-lg bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-8 rounded-lg bg-gray-700 text-white text-xs flex items-center justify-center flex-shrink-0">
           {(currentUserName?.slice(1) || currentUserName?.[0] || "").toUpperCase()}
         </div>
         <div className="flex-1">
@@ -89,13 +92,13 @@ export function CommentsSection({
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="댓글을 입력하세요..."
-            className="w-full px-3 py-2 border border-gray-300 rounded text-navy resize-none focus:outline-none focus:ring-2 focus:ring-navy"
+            className="w-full px-3 py-2 border border-gray-300 rounded text-gray-900 resize-none focus:outline-none focus:ring-2 focus:ring-[#00d992]"
             rows={3}
           />
           <button
             onClick={handleSubmit}
             disabled={loading || !newComment.trim()}
-            className="mt-2 px-4 py-2 bg-navy text-white rounded hover:bg-navy-light disabled:opacity-50"
+            className="mt-2 px-4 py-2 bg-[#00d992] text-[#0a1a14] rounded hover:bg-[#00b87a] disabled:opacity-50"
           >
             {loading ? '추가 중...' : '댓글 추가'}
           </button>

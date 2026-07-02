@@ -64,7 +64,7 @@ export function MemberPicker({ cardId, cardTitle, currentMembers, onUpdate, onCl
   return (
     <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-64 z-10">
       <div className="flex items-center justify-between mb-3">
-        <h4 className="font-semibold text-navy">멤버</h4>
+        <h4 className="font-semibold text-gray-900">멤버</h4>
         <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
       </div>
 
@@ -78,14 +78,14 @@ export function MemberPicker({ cardId, cardTitle, currentMembers, onUpdate, onCl
               disabled={loading}
               className="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
-              <div className="w-10 h-8 rounded-lg bg-navy text-white text-xs flex items-center justify-center">
+              <div className="w-10 h-8 rounded-lg bg-gray-700 text-white text-xs flex items-center justify-center">
                 {(user.name?.slice(1) || user.name?.[0] || "").toUpperCase()}
               </div>
               <div className="flex-1 text-left">
-                <p className="text-navy font-medium">{user.name}</p>
+                <p className="text-gray-900 font-medium">{user.name}</p>
                 <p className="text-xs text-gray-500">{user.email}</p>
               </div>
-              {isAssigned && <span className="text-navy font-bold">✓</span>}
+              {isAssigned && <span className="text-gray-900 font-bold">✓</span>}
             </button>
           )
         })}

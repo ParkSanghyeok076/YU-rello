@@ -293,7 +293,13 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
 
         {/* User filter */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-white/80">👤 필터:</span>
+          <span className="flex items-center gap-1 text-sm text-white/80">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            필터:
+          </span>
           <select
             value={selectedUser || 'all'}
             onChange={handleUserFilterChange}

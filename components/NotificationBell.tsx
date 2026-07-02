@@ -83,9 +83,12 @@ export function NotificationBell({ userId }: NotificationBellProps) {
     <div className="relative">
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="relative p-2 hover:bg-navy-light rounded transition-colors"
+        className="relative p-2 hover:bg-white/10 rounded transition-colors"
       >
-        🔔
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
         {unreadCount > 0 && (
           <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -96,7 +99,7 @@ export function NotificationBell({ userId }: NotificationBellProps) {
       {showDropdown && (
         <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-            <h3 className="font-semibold text-navy">알림</h3>
+            <h3 className="font-semibold text-gray-900">알림</h3>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllAsRead}
@@ -120,7 +123,7 @@ export function NotificationBell({ userId }: NotificationBellProps) {
                     !notification.read ? 'bg-blue-50' : ''
                   }`}
                 >
-                  <p className="text-navy text-sm mb-1">{notification.message}</p>
+                  <p className="text-gray-900 text-sm mb-1">{notification.message}</p>
                   <p className="text-xs text-gray-500">
                     {new Date(notification.created_at).toLocaleString('ko-KR')}
                   </p>
