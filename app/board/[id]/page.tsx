@@ -70,6 +70,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
       )
     `)
     .eq('board_id', id)
+    .is('archived_at', null)
     .order('position', { ascending: true }) as { data: any[] | null; error: unknown }
 
   // Fetch all users for filter
@@ -89,7 +90,7 @@ export default async function BoardPage({ params }: { params: Promise<{ id: stri
   return (
     <BoardView
       board={board}
-      initialLists={lists || []}
+      initialLists={(lists || []).map((list: any) => ({ ...list, cards: (list.cards || []).filter((c: any) => !c.archived_at) }))}
       users={users || []}
       currentUserId={session.user.id}
       boardMembers={boardMembers || []}

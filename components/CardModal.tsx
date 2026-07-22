@@ -142,6 +142,24 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
     }
   }
 
+  const handleArchiveCard = async () => {
+    setLoading(true)
+    try {
+      const { error } = await supabase
+        .from('cards')
+        .update({ archived_at: new Date().toISOString() })
+        .eq('id', cardId)
+      if (error) throw error
+      onClose()
+      onUpdate()
+    } catch (error) {
+      console.error('Error archiving card:', error)
+      alert('아카이빙 실패')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleDeleteCard = async () => {
     if (!confirm('정말 이 카드를 삭제하시겠습니까?')) return
 
@@ -441,6 +459,16 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
               <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
             </svg>
             카드 삭제
+          </button>
+          <button
+            onClick={handleArchiveCard}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+            </svg>
+            아카이빙
           </button>
         </div>
       </motion.div>

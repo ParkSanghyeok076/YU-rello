@@ -68,8 +68,15 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
         )
       `)
       .eq('board_id', board.id)
+      .is('archived_at', null)
       .order('position', { ascending: true })
-    if (data) setLists(data)
+    if (data) {
+      const filtered = data.map((list: any) => ({
+        ...list,
+        cards: (list.cards || []).filter((c: any) => !c.archived_at)
+      }))
+      setLists(filtered)
+    }
     const { data: members } = await supabase
       .from('board_members')
       .select('user_id, profiles(*)')
@@ -305,6 +312,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
         onViewChange={setCurrentView}
         onUserFilterChange={setUserFilter}
         users={users}
+        onBoardUpdate={handleRefresh}
       />
 
       {/* Content area fills remaining height — horizontal scrollbar always at viewport bottom */}

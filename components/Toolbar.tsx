@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { ArchivePanel } from './ArchivePanel'
 
 type UpcomingTask = {
   id: string
@@ -23,16 +24,19 @@ type ToolbarProps = {
   onViewChange: (view: 'board' | 'calendar') => void
   onUserFilterChange: (userId: string | null) => void
   users: Array<{ id: string; name: string }>
+  onBoardUpdate: () => void
 }
 
-export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: ToolbarProps) {
+export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBoardUpdate }: ToolbarProps) {
   const [currentView, setCurrentView] = useState<'board' | 'calendar'>('board')
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [isAlarmOpen, setIsAlarmOpen] = useState(false)
   const [allUpcomingTasks, setAllUpcomingTasks] = useState<UpcomingTask[]>([])
   const [alarmLoading, setAlarmLoading] = useState(false)
   const [selectedAlarmMember, setSelectedAlarmMember] = useState<string | null>(null)
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false)
   const alarmRef = useRef<HTMLDivElement>(null)
+  const archiveRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
   // Close alarm dropdown on outside click
@@ -47,6 +51,18 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
     }
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isAlarmOpen])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (archiveRef.current && !archiveRef.current.contains(e.target as Node)) {
+        setIsArchiveOpen(false)
+      }
+    }
+    if (isArchiveOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isArchiveOpen])
 
   const handleViewChange = (view: 'board' | 'calendar') => {
     setCurrentView(view)
@@ -76,8 +92,9 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
       // Step 1: get all card IDs in this board
       const { data: listData, error: listError } = await supabase
         .from('lists')
-        .select('cards(id)')
+        .select('cards(id, archived_at)')
         .eq('board_id', boardId)
+        .is('archived_at', null)
 
       console.log('🔍 [알림 디버그] Step 1 - listData:', listData)
       console.log('🔍 [알림 디버그] Step 1 - listError:', listError)
@@ -85,7 +102,9 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
       if (listError) throw listError
 
       const cardIds = (listData ?? []).flatMap((l: any) =>
-        ((l.cards ?? []) as Array<{ id: string }>).map((c) => c.id)
+        ((l.cards ?? []) as Array<{ id: string; archived_at: string | null }>)
+          .filter((c) => !c.archived_at)
+          .map((c) => c.id)
       )
 
       console.log('🔍 [알림 디버그] Step 1 - cardIds:', cardIds)
@@ -179,6 +198,28 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
 
       {/* Right: alarm + filter */}
       <div className="flex items-center gap-3">
+        {/* 아카이빙 button */}
+        <div className="relative" ref={archiveRef}>
+          <button
+            onClick={() => setIsArchiveOpen((prev) => !prev)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+            </svg>
+            아카이빙
+          </button>
+
+          {isArchiveOpen && (
+            <ArchivePanel
+              boardId={boardId}
+              users={users}
+              onUpdate={() => { onBoardUpdate(); }}
+              onClose={() => setIsArchiveOpen(false)}
+            />
+          )}
+        </div>
+
         {/* 알림 button */}
         <div className="relative" ref={alarmRef}>
           <button
@@ -292,7 +333,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users }: To
         </div>
 
         {/* User filter */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <span className="flex items-center gap-1 text-sm text-white/80">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>

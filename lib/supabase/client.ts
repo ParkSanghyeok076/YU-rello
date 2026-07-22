@@ -61,6 +61,7 @@ export type Database = {
           title: string
           position: number
           created_at: string
+          archived_at: string | null
         }
         Insert: {
           id?: string
@@ -68,6 +69,7 @@ export type Database = {
           title: string
           position: number
           created_at?: string
+          archived_at?: string | null
         }
         Update: {
           id?: string
@@ -75,6 +77,7 @@ export type Database = {
           title?: string
           position?: number
           created_at?: string
+          archived_at?: string | null
         }
         Relationships: []
       }
@@ -89,6 +92,7 @@ export type Database = {
           position: number
           created_at: string
           updated_at: string
+          archived_at: string | null
         }
         Insert: {
           id?: string
@@ -100,6 +104,7 @@ export type Database = {
           position: number
           created_at?: string
           updated_at?: string
+          archived_at?: string | null
         }
         Update: {
           id?: string
@@ -111,6 +116,7 @@ export type Database = {
           position?: number
           created_at?: string
           updated_at?: string
+          archived_at?: string | null
         }
         Relationships: []
       }

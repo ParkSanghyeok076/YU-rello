@@ -67,6 +67,16 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
     setContextMenu({ x: e.clientX, y: e.clientY })
   }
 
+  const handleArchiveCard = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setContextMenu(null)
+    await supabase
+      .from('cards')
+      .update({ archived_at: new Date().toISOString() })
+      .eq('id', card.id)
+    onUpdate?.()
+  }
+
   const handleDeleteCard = async (e: React.MouseEvent) => {
     e.stopPropagation()
     setContextMenu(null)
@@ -198,6 +208,15 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
               <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
             </svg>
             카드 삭제
+          </button>
+          <button
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+            onClick={handleArchiveCard}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+            </svg>
+            아카이빙
           </button>
         </div>
       )}

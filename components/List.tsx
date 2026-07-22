@@ -90,6 +90,14 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
     }
   }
 
+  const handleArchive = async () => {
+    const { error } = await supabase
+      .from('lists')
+      .update({ archived_at: new Date().toISOString() })
+      .eq('id', list.id)
+    if (!error) onUpdate()
+  }
+
   const handleDelete = async () => {
     if (!confirm(`"${list.title}" 리스트와 모든 카드를 삭제하시겠습니까?`)) return
     const { error } = await supabase.from('lists').delete().eq('id', list.id)
@@ -185,6 +193,15 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
                   <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
                 </svg>
                 이름 변경
+              </button>
+              <button
+                onClick={() => { setIsMenuOpen(false); handleArchive() }}
+                className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#3d444e] transition-colors flex items-center gap-2"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+                </svg>
+                아카이빙
               </button>
               <button
                 onClick={() => { setIsMenuOpen(false); handleDelete() }}
