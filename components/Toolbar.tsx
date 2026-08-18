@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ArchivePanel } from './ArchivePanel'
+import { WeeklyReportModal } from './WeeklyReportModal'
 
 type UpcomingTask = {
   id: string
@@ -35,6 +36,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
   const [alarmLoading, setAlarmLoading] = useState(false)
   const [selectedAlarmMember, setSelectedAlarmMember] = useState<string | null>(null)
   const [isArchiveOpen, setIsArchiveOpen] = useState(false)
+  const [isReportOpen, setIsReportOpen] = useState(false)
   const alarmRef = useRef<HTMLDivElement>(null)
   const archiveRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
@@ -198,6 +200,28 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
 
       {/* Right: alarm + filter */}
       <div className="flex items-center gap-3">
+        {/* 주간 리포트 button */}
+        <button
+          onClick={() => setIsReportOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="8" y1="13" x2="16" y2="13"/>
+            <line x1="8" y1="17" x2="16" y2="17"/>
+          </svg>
+          주간 리포트
+        </button>
+
+        {isReportOpen && (
+          <WeeklyReportModal
+            boardId={boardId}
+            users={users}
+            onClose={() => setIsReportOpen(false)}
+          />
+        )}
+
         {/* 아카이빙 button */}
         <div className="relative" ref={archiveRef}>
           <button
