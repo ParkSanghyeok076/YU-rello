@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   DndContext,
   DragOverlay,
@@ -44,6 +45,11 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   const [isMemberManagerOpen, setIsMemberManagerOpen] = useState(false)
   const [boardMembers, setBoardMembers] = useState(initialBoardMembers)
   const memberManagerRef = useRef<HTMLDivElement>(null)
+  const [isBoardSwitcherOpen, setIsBoardSwitcherOpen] = useState(false)
+  const [switcherBoards, setSwitcherBoards] = useState<Array<{ id: string; title: string }> | null>(null)
+  const [switcherLoading, setSwitcherLoading] = useState(false)
+  const boardSwitcherRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
   const supabase = createClient()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const isPanningRef = useRef(false)
@@ -95,6 +101,36 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
     }
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isMemberManagerOpen])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (boardSwitcherRef.current && !boardSwitcherRef.current.contains(e.target as Node)) {
+        setIsBoardSwitcherOpen(false)
+      }
+    }
+    if (isBoardSwitcherOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isBoardSwitcherOpen])
+
+  const handleBoardSwitcherClick = async () => {
+    if (isBoardSwitcherOpen) {
+      setIsBoardSwitcherOpen(false)
+      return
+    }
+    setIsBoardSwitcherOpen(true)
+    if (switcherBoards === null) {
+      setSwitcherLoading(true)
+      // RLS가 board_members 기준으로 필터링하므로 접근 권한 없는 보드는 조회 자체가 되지 않음
+      const { data } = await supabase
+        .from('boards')
+        .select('id, title')
+        .order('created_at', { ascending: false })
+      setSwitcherBoards(data || [])
+      setSwitcherLoading(false)
+    }
+  }
 
   useEffect(() => {
     const handleGlobalMouseUp = () => {
@@ -258,7 +294,41 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
 
   const boardHeaderUI = (
     <div className="flex items-center gap-4 mb-6 flex-wrap">
-      <h1 className="text-3xl font-bold text-white">{board.title}</h1>
+      <div className="relative" ref={boardSwitcherRef}>
+        <h1
+          className="text-3xl font-bold text-white cursor-pointer"
+          onClick={handleBoardSwitcherClick}
+        >
+          {board.title}
+        </h1>
+
+        {isBoardSwitcherOpen && (
+          <div className="absolute left-0 top-full mt-2 w-64 max-h-96 overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+            {switcherLoading ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-400">불러오는 중...</div>
+            ) : switcherBoards && switcherBoards.length > 0 ? (
+              <ul>
+                {switcherBoards.map((b) => (
+                  <li key={b.id}>
+                    <button
+                      onClick={() => { setIsBoardSwitcherOpen(false); router.push(`/board/${b.id}`) }}
+                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                        b.id === board.id
+                          ? 'bg-gray-100 text-navy font-semibold'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      {b.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="px-4 py-6 text-center text-sm text-gray-400">접근 가능한 보드가 없습니다</div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* 멤버 아바타 */}
       <div className="flex items-center">
