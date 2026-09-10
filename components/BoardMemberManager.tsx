@@ -53,7 +53,7 @@ export function BoardMemberManager({
   }
 
   return (
-    <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-72 z-30">
+    <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-72 z-30">
       <div className="flex items-center justify-between mb-3">
         <h4 className="font-semibold text-navy">보드 멤버</h4>
         <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
@@ -73,15 +73,15 @@ export function BoardMemberManager({
               <div className="w-10 h-8 rounded-lg bg-navy text-white text-xs flex items-center justify-center flex-shrink-0">
                 {(user.name?.slice(1) || user.name?.[0] || "").toUpperCase()}
               </div>
-              <div className="flex-1">
-                <p className="text-navy font-medium text-sm">{user.name}</p>
-                <p className="text-xs text-gray-500">{user.email}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-navy font-medium text-sm truncate">{user.name}</p>
+                <p className="text-xs text-gray-500 truncate">{user.email}</p>
               </div>
               {canToggle ? (
                 <button
                   onClick={() => handleToggleMember(user.id)}
                   disabled={loadingUsers.has(user.id)}
-                  className={`text-xs px-2 py-1 rounded transition-colors disabled:opacity-50 ${
+                  className={`flex-shrink-0 whitespace-nowrap text-xs px-2 py-1 rounded transition-colors disabled:opacity-50 ${
                     isAssigned
                       ? 'bg-red-100 text-red-600 hover:bg-red-200'
                       : 'bg-navy text-white hover:bg-navy-light'
@@ -91,7 +91,7 @@ export function BoardMemberManager({
                 </button>
               ) : (
                 isAssigned && (
-                  <span className="text-xs text-gray-400">
+                  <span className="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">
                     {isCurrentUser && isOwner ? '나 (관리자)' : '멤버'}
                   </span>
                 )
