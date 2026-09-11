@@ -18,9 +18,11 @@ export default async function DashboardPage() {
         <h2 className="text-2xl font-bold mb-4">내 보드</h2>
 
         {boards && boards.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-flow-col grid-rows-4 gap-4 justify-start">
             {boards.map((board) => (
-              <BoardCard key={board.id} board={board} />
+              <div key={board.id} className="w-80">
+                <BoardCard board={board} />
+              </div>
             ))}
           </div>
         ) : (
