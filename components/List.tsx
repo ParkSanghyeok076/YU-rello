@@ -112,7 +112,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: isDragging ? 0.5 : 1, x: 0 }}
       transition={{ duration: 0.2 }}
-      className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3 flex flex-col"
+      className="flex-shrink-0 w-72 max-md:w-[85vw] max-md:snap-start bg-dark-list rounded-xl p-3 flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3 px-1">
@@ -157,7 +157,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
           )}
           <button
             onClick={() => { setIsMenuOpen(false); setIsMemberPickerOpen(prev => !prev) }}
-            className="w-5 h-5 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center hover:bg-gray-500 transition-colors ml-1"
+            className="w-5 h-5 touch-only:w-7 touch-only:h-7 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center hover:bg-gray-500 transition-colors ml-1"
             title="멤버 관리"
           >
             +
@@ -178,7 +178,7 @@ export function List({ list, onUpdate, currentUserId, currentUserName, users }: 
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => { setIsMemberPickerOpen(false); setIsMenuOpen((prev) => !prev) }}
-            className="text-gray-400 hover:text-gray-200 transition-colors px-1 ml-2"
+            className="text-gray-400 hover:text-gray-200 transition-colors px-1 ml-2 touch-only:px-2.5 touch-only:py-1"
           >
             ⋯
           </button>

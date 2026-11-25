@@ -120,7 +120,7 @@ export function AddChecklistPopover({
   return (
     <div
       ref={popoverRef}
-      className="absolute z-50 mt-1 w-72 bg-white border border-gray-200 rounded-xl shadow-xl p-4"
+      className="mobile-sheet absolute z-50 mt-1 w-72 bg-white border border-gray-200 rounded-xl shadow-xl p-4"
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-700">체크리스트 추가</h3>

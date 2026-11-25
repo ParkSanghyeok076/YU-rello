@@ -196,18 +196,18 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.15 }}
-      className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-8 overflow-y-auto"
+      className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-8 max-md:p-0 overflow-y-auto"
       onClick={onClose}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: -8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.2 }}
-        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full my-8"
+        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full my-8 max-md:my-0 max-md:rounded-none max-md:min-h-full max-md:pt-[env(safe-area-inset-top)] max-md:pb-[env(safe-area-inset-bottom)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 max-md:p-4 border-b border-gray-200">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               {/* Labels preview */}
@@ -273,7 +273,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-6">
+        <div className="p-6 max-md:p-4 space-y-6">
           {/* Description */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
@@ -438,7 +438,7 @@ export function CardModal({ cardId, isOpen, onClose, onUpdate, currentUserId, cu
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 flex items-center gap-3">
+        <div className="p-6 max-md:p-4 border-t border-gray-200 flex items-center gap-3 max-md:flex-wrap">
           <button
             onClick={() => setIsCopyModalOpen(true)}
             disabled={loading}

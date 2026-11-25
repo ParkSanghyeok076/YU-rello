@@ -285,7 +285,7 @@ export function WeeklyReportModal({ boardId, users, onClose }: WeeklyReportModal
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.15 }}
-      className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-8 overflow-y-auto print:p-0 print:bg-white print:static print:block"
+      className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-8 max-md:p-0 overflow-y-auto print:p-0 print:bg-white print:static print:block"
       onClick={onClose}
     >
       <style jsx global>{`
@@ -312,7 +312,7 @@ export function WeeklyReportModal({ boardId, users, onClose }: WeeklyReportModal
         initial={{ opacity: 0, scale: 0.98, y: -8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.2 }}
-        className="bg-white rounded-xl shadow-2xl max-w-6xl w-full my-8 print:shadow-none print:rounded-none print:max-w-none print:m-0 print:w-full"
+        className="bg-white rounded-xl shadow-2xl max-w-6xl w-full my-8 max-md:my-0 max-md:rounded-none max-md:min-h-full max-md:pt-[env(safe-area-inset-top)] print:shadow-none print:rounded-none print:max-w-none print:m-0 print:w-full"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header (hidden on print) */}

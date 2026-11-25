@@ -7,7 +7,8 @@ import {
   DragOverlay,
   closestCorners,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
@@ -144,8 +145,12 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   useRealtimeSubscription(board.id, handleRefresh)
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: { distance: 8 },
+    }),
+    // 터치: 길게 눌러야 드래그, 짧은 스와이프는 스크롤
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -293,17 +298,17 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
     : null
 
   const boardHeaderUI = (
-    <div className="flex items-center gap-4 mb-6 flex-wrap">
+    <div className="flex items-center gap-4 mb-6 flex-wrap max-md:gap-3 max-md:mb-4">
       <div className="relative" ref={boardSwitcherRef}>
         <h1
-          className="text-3xl font-bold text-white cursor-pointer"
+          className="text-3xl max-md:text-2xl font-bold text-white cursor-pointer"
           onClick={handleBoardSwitcherClick}
         >
           {board.title}
         </h1>
 
         {isBoardSwitcherOpen && (
-          <div className="absolute left-0 top-full mt-2 w-64 max-h-96 overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+          <div className="mobile-sheet absolute left-0 top-full mt-2 w-64 max-h-96 overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
             {switcherLoading ? (
               <div className="px-4 py-6 text-center text-sm text-gray-400">불러오는 중...</div>
             ) : switcherBoards && switcherBoards.length > 0 ? (
@@ -375,7 +380,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
   )
 
   return (
-    <div className="h-screen flex flex-col bg-dark-bg">
+    <div className="h-screen max-md:h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] flex flex-col bg-dark-bg">
       {/* Toolbar at top */}
       <Toolbar
         boardId={board.id}
@@ -389,7 +394,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
       {currentView === 'board' ? (
         <div
           ref={scrollContainerRef}
-          className={`flex-1 overflow-x-auto overflow-y-auto ${isPanning ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+          className={`flex-1 overflow-x-auto overflow-y-auto max-md:snap-x max-md:snap-proximity max-md:scroll-px-3 ${isPanning ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
           onMouseDown={handlePanMouseDown}
           onMouseMove={handlePanMouseMove}
           onMouseUp={stopPanOnElement}
@@ -402,7 +407,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
             onDragEnd={handleDragEnd}
             onDragCancel={handleDragCancel}
           >
-            <div className="p-6">
+            <div className="p-6 max-md:p-3">
               {boardHeaderUI}
 
               <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
@@ -437,7 +442,7 @@ export function BoardView({ board, initialLists, users, currentUserId, boardMemb
           </DndContext>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto flex flex-col p-6 pb-0">
+        <div className="flex-1 overflow-y-auto flex flex-col p-6 pb-0 max-md:p-3 max-md:pb-0">
           {boardHeaderUI}
           <div className="flex-1 min-h-0">
             <CalendarView

@@ -46,7 +46,7 @@ export function CreateListButton({ boardId, currentPosition, onListCreated }: Cr
     return (
       <button
         onClick={() => setIsAdding(true)}
-        className="flex-shrink-0 w-72 p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors text-left"
+        className="flex-shrink-0 w-72 max-md:w-[85vw] max-md:snap-start p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors text-left"
       >
         <span className="text-white/80 text-sm">+ 리스트 추가</span>
       </button>
@@ -54,7 +54,7 @@ export function CreateListButton({ boardId, currentPosition, onListCreated }: Cr
   }
 
   return (
-    <div className="flex-shrink-0 w-72 bg-dark-list rounded-xl p-3">
+    <div className="flex-shrink-0 w-72 max-md:w-[85vw] max-md:snap-start bg-dark-list rounded-xl p-3">
       <form onSubmit={handleSubmit}>
         <input
           type="text"

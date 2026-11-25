@@ -53,7 +53,7 @@ export function BoardMemberManager({
   }
 
   return (
-    <div className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-72 z-30">
+    <div className="mobile-sheet absolute left-0 top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-72 z-30">
       <div className="flex items-center justify-between mb-3">
         <h4 className="font-semibold text-navy">보드 멤버</h4>
         <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">×</button>

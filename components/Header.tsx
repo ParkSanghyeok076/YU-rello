@@ -21,16 +21,16 @@ export function Header({ userEmail, userName, userId }: HeaderProps) {
   }
 
   return (
-    <header className="bg-black border-b border-gray-800 px-6 py-4">
+    <header className="bg-black border-b border-gray-800 px-6 py-4 max-md:px-4 max-md:py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <h1 className="text-2xl font-[family-name:var(--font-logo)] font-bold">YU-rello</h1>
+          <h1 className="text-2xl max-md:text-xl font-[family-name:var(--font-logo)] font-bold">YU-rello</h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 max-md:gap-2">
           <NotificationBell userId={userId} />
           <div className="flex items-center gap-2">
-            <span className="text-sm">{userName}</span>
+            <span className="text-sm max-md:hidden">{userName}</span>
             <button
               onClick={handleLogout}
               className="px-3 py-1 text-sm bg-navy-light hover:bg-navy-dark rounded transition-colors"

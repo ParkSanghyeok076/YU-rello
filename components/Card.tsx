@@ -104,15 +104,28 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
         whileHover={{ y: -2, transition: { duration: 0.1 } }}
         onClick={() => setIsModalOpen(true)}
         onContextMenu={handleContextMenu}
-        className="relative group bg-white border border-gray-200 rounded-lg p-3 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+        className="relative group bg-white border border-gray-200 rounded-lg p-3 cursor-pointer shadow-sm hover:shadow-md transition-shadow touch-only:select-none touch-only:[-webkit-touch-callout:none]"
       >
         {/* Hover edit button */}
         <button
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-500 text-xs z-10"
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-500 text-xs z-10 touch-only:hidden"
           onClick={(e) => { e.stopPropagation(); setIsModalOpen(true) }}
           title="편집"
         >
           ✎
+        </button>
+
+        {/* 터치 기기용 메뉴 버튼 (우클릭 메뉴 대체) */}
+        <button
+          className="hidden touch-only:flex absolute top-1 right-1 w-8 h-8 rounded items-center justify-center text-gray-500 text-lg z-10"
+          onClick={(e) => {
+            e.stopPropagation()
+            const rect = e.currentTarget.getBoundingClientRect()
+            setContextMenu({ x: rect.right, y: rect.bottom })
+          }}
+          title="메뉴"
+        >
+          ⋯
         </button>
 
         {/* Labels */}
@@ -183,7 +196,10 @@ export function Card({ card, onUpdate, currentUserId = '', currentUserName = 'Us
         <div
           ref={contextMenuRef}
           className="fixed bg-white border border-gray-200 rounded-lg shadow-xl z-[100] overflow-hidden py-1 min-w-[140px]"
-          style={{ left: contextMenu.x, top: contextMenu.y }}
+          style={{
+            left: Math.max(8, Math.min(contextMenu.x, window.innerWidth - 160)),
+            top: Math.max(8, Math.min(contextMenu.y, window.innerHeight - 140)),
+          }}
           onClick={(e) => e.stopPropagation()}
         >
           <button

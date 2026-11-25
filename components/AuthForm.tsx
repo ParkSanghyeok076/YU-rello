@@ -53,7 +53,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto mt-16 p-8 bg-white rounded-lg shadow-lg">
+    <div className="w-full max-w-md mx-auto mt-16 p-8 max-md:w-[calc(100%-2rem)] max-md:p-6 max-md:mt-8 bg-white rounded-lg shadow-lg">
       <h1 className="text-3xl font-[family-name:var(--font-logo)] font-bold text-navy mb-8 text-center">
         YU-rello
       </h1>

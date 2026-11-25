@@ -55,7 +55,7 @@ export function BoardCard({ board }: BoardCardProps) {
       <div className="absolute top-3 right-3" ref={menuRef}>
         <button
           onClick={(e) => { e.preventDefault(); setIsMenuOpen((prev) => !prev) }}
-          className="opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-600 text-sm"
+          className="opacity-0 group-hover:opacity-100 touch-only:opacity-100 transition-opacity w-7 h-7 touch-only:w-9 touch-only:h-9 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-600 text-sm"
         >
           ⋯
         </button>

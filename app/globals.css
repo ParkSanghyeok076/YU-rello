@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* 터치 기기(아이폰 등) 전용 스타일 — 마우스 환경에는 적용되지 않음 */
+@custom-variant touch-only (@media (hover: none) and (pointer: coarse));
+
 @theme {
   --font-logo: 'Orbitron', sans-serif;
 
@@ -22,4 +25,36 @@
 body {
   background-color: #0d1117;
   color: white;
+}
+
+/* iOS: 노치/홈 인디케이터 영역 피하기 (viewportFit: cover) */
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS: 16px 미만 입력창은 포커스 시 화면이 확대됨 */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/*
+ * 모바일 팝오버: 768px 미만에서만 화면 폭에 맞춘 상단 시트로 표시.
+ * 레이어 밖(unlayered) 규칙이라 Tailwind 유틸리티(absolute, w-72 등)보다 우선함.
+ */
+@media (width < 48rem) {
+  .mobile-sheet {
+    position: fixed;
+    left: 0.75rem;
+    right: 0.75rem;
+    top: calc(env(safe-area-inset-top) + 4rem);
+    width: auto;
+    margin-top: 0;
+    max-height: 70dvh;
+    overflow-y: auto;
+  }
 }

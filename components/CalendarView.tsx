@@ -83,7 +83,7 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg p-4 h-full">
+    <div className="bg-white rounded-lg p-4 max-md:p-2 h-full">
       <style>{`
         .fc {
           --fc-border-color: #e5e7eb;
@@ -100,6 +100,13 @@ export function CalendarView({ lists, onCardClick }: CalendarViewProps) {
         .fc .fc-daygrid-day-number { color: #1a2b4a; }
         .fc .fc-col-header-cell-cushion { color: #1a2b4a; font-weight: 600; }
         .fc .fc-toolbar-title { color: #1a2b4a; font-size: 1.5rem; font-weight: 700; }
+        @media (width < 48rem) {
+          .fc .fc-toolbar { flex-wrap: wrap; gap: 0.5rem; }
+          .fc .fc-toolbar-title { font-size: 1.1rem; }
+          .fc .fc-button { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
+          .fc .fc-daygrid-day-number, .fc .fc-col-header-cell-cushion { font-size: 0.75rem; }
+          .fc .fc-event { font-size: 0.7rem; }
+        }
       `}</style>
 
       <FullCalendar

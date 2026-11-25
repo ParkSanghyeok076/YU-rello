@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -6,7 +6,20 @@ export const metadata: Metadata = {
   description: "Collaboration tool inspired by Trello",
   icons: {
     icon: '/로고사진.png',
+    apple: '/apple-touch-icon.png',
   },
+  appleWebApp: {
+    capable: true,
+    title: 'YU-rello',
+    statusBarStyle: 'black-translucent',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#0d1117',
 };
 
 export default function RootLayout({

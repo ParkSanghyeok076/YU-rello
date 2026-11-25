@@ -6,7 +6,8 @@ import { ChecklistItem } from './ChecklistItem'
 import {
   DndContext,
   DragOverlay,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
@@ -33,7 +34,10 @@ export function ChecklistSection({ checklist, items, onUpdate, onDelete }: Check
     [...items].sort((a, b) => a.position - b.position)
   )
   const [draggingItem, setDraggingItem] = useState<any>(null)
-  const dndSensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
+  const dndSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
+  )
 
   useEffect(() => {
     setLocalItems([...items].sort((a, b) => a.position - b.position))

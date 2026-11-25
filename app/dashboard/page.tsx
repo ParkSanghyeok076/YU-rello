@@ -13,14 +13,14 @@ export default async function DashboardPage() {
     .order('created_at', { ascending: false }) as { data: Board[] | null; error: unknown }
 
   return (
-    <div className="p-8">
+    <div className="p-8 max-md:p-4">
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-4">내 보드</h2>
 
         {boards && boards.length > 0 ? (
-          <div className="grid grid-flow-col grid-rows-4 gap-4 justify-start">
+          <div className="grid grid-flow-col grid-rows-4 gap-4 justify-start max-md:grid-flow-row max-md:grid-rows-none max-md:justify-stretch">
             {boards.map((board) => (
-              <div key={board.id} className="w-80">
+              <div key={board.id} className="w-80 max-md:w-full">
                 <BoardCard board={board} />
               </div>
             ))}

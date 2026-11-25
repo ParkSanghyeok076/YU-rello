@@ -51,7 +51,7 @@ export function BoardForm() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-lg shadow-lg">
+    <div className="max-w-md mx-auto mt-16 p-8 max-md:mx-4 max-md:p-6 max-md:mt-8 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-navy mb-6">새 보드 만들기</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">

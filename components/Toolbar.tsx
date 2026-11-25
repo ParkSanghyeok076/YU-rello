@@ -173,7 +173,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
   }
 
   return (
-    <div className="bg-navy-light px-6 py-3 flex items-center justify-between">
+    <div className="bg-navy-light px-6 py-3 flex items-center justify-between max-md:px-3 max-md:py-2 max-md:gap-2">
       {/* Left: pill toggle */}
       <div className="flex rounded-full border border-white/30 overflow-hidden text-sm">
         <button
@@ -199,11 +199,11 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
       </div>
 
       {/* Right: alarm + filter */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 max-md:gap-1">
         {/* 주간 리포트 button */}
         <button
           onClick={() => setIsReportOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 max-md:p-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -211,7 +211,7 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
             <line x1="8" y1="13" x2="16" y2="13"/>
             <line x1="8" y1="17" x2="16" y2="17"/>
           </svg>
-          주간 리포트
+          <span className="max-md:hidden">주간 리포트</span>
         </button>
 
         {isReportOpen && (
@@ -226,12 +226,12 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
         <div className="relative" ref={archiveRef}>
           <button
             onClick={() => setIsArchiveOpen((prev) => !prev)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 max-md:p-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
             </svg>
-            아카이빙
+            <span className="max-md:hidden">아카이빙</span>
           </button>
 
           {isArchiveOpen && (
@@ -248,17 +248,17 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
         <div className="relative" ref={alarmRef}>
           <button
             onClick={handleAlarmClick}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 max-md:p-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
-            알림
+            <span className="max-md:hidden">알림</span>
           </button>
 
           {isAlarmOpen && (
-            <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
+            <div className="mobile-sheet absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
               <div className="px-4 py-3 border-b border-gray-100 space-y-2">
                 <h3 className="font-semibold text-gray-800 text-sm">할 일 알림 (상위 10개)</h3>
                 <select
@@ -363,12 +363,12 @@ export function Toolbar({ boardId, onViewChange, onUserFilterChange, users, onBo
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
               <circle cx="12" cy="7" r="4"/>
             </svg>
-            필터:
+            <span className="max-md:hidden">필터:</span>
           </span>
           <select
             value={selectedUser || 'all'}
             onChange={handleUserFilterChange}
-            className="px-3 py-1 bg-white text-navy rounded focus:outline-none focus:ring-2 focus:ring-white text-sm"
+            className="px-3 py-1 bg-white text-navy rounded focus:outline-none focus:ring-2 focus:ring-white text-sm max-md:max-w-24 max-md:px-2"
           >
             <option value="all">모두 보기</option>
             {users.map((user) => (

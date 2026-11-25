@@ -97,7 +97,7 @@ export function NotificationBell({ userId }: NotificationBellProps) {
       </button>
 
       {showDropdown && (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+        <div className="mobile-sheet absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
             <h3 className="font-semibold text-gray-900">알림</h3>
             {unreadCount > 0 && (
